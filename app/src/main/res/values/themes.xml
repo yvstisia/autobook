@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Base window theme used before Compose takes over rendering.
+        Actual app colors are defined in Compose (ui/theme). minSdk 26 supports
+        the platform Material DayNight base, so no Material Components dependency
+        is required for the window background.
+    -->
+    <style name="Theme.AutoBook" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/ic_launcher_background</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+</resources>

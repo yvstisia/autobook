@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoBook</string>
+    <string name="app_description">Catat servis, bensin, dan bengkel kendaraan Anda — offline, tanpa login.</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_dashboard">Beranda</string>
+    <string name="nav_vehicles">Kendaraan</string>
+    <string name="nav_services">Servis</string>
+    <string name="nav_fuel">Bensin</string>
+    <string name="nav_workshops">Bengkel</string>
+
+    <!-- Common actions -->
+    <string name="action_save">Simpan</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_cancel">Batal</string>
+    <string name="error_required">Tidak boleh kosong</string>
+    <string name="error_invalid_number">Masukkan angka yang valid</string>
+
+    <!-- Vehicle -->
+    <string name="vehicle_list_title">Kendaraan</string>
+    <string name="vehicle_empty_title">Belum ada kendaraan</string>
+    <string name="vehicle_empty_subtitle">Tap tombol + untuk menambahkan kendaraan pertama</string>
+    <string name="add_vehicle_title">Tambah Kendaraan</string>
+    <string name="edit_vehicle_title">Edit Kendaraan</string>
+    <string name="field_nickname">Nama Panggilan</string>
+    <string name="field_type">Tipe</string>
+    <string name="type_motor">Motor</string>
+    <string name="type_mobil">Mobil</string>
+    <string name="field_brand">Merek</string>
+    <string name="field_model">Model</string>
+    <string name="field_year">Tahun</string>
+    <string name="field_odometer">Odometer (km)</string>
+    <string name="photo_todo">Tambah Foto (segera hadir)</string>
+    <string name="vehicle_saved">Kendaraan berhasil disimpan</string>
+    <string name="vehicle_deleted">Kendaraan berhasil dihapus</string>
+    <string name="delete_vehicle_title">Hapus Kendaraan?</string>
+    <string name="delete_vehicle_message">Semua data servis, bensin, dan pengingat untuk kendaraan ini akan ikut terhapus.</string>
+
+    <!-- Service -->
+    <string name="service_list_title">Servis</string>
+    <string name="service_empty_title">Belum ada catatan servis</string>
+    <string name="service_empty_subtitle">Tap tombol + untuk mencatat servis pertama</string>
+    <string name="add_service_title">Catat Servis</string>
+    <string name="field_service_date">Tanggal Servis</string>
+    <string name="field_service_types">Jenis Servis</string>
+    <string name="field_cost">Biaya (Rp)</string>
+    <string name="field_notes">Catatan</string>
+    <string name="service_type_oli">Ganti Oli</string>
+    <string name="service_type_tune_up">Tune-Up</string>
+    <string name="service_type_ban">Ganti Ban</string>
+    <string name="service_type_rem">Servis Rem</string>
+    <string name="service_type_aki">Ganti Aki</string>
+    <string name="service_type_lainnya">Lainnya</string>
+    <string name="reminder_set">Set Pengingat</string>
+    <string name="reminder_remind_by">Ingatkan Berdasarkan</string>
+    <string name="remind_by_km">Jarak</string>
+    <string name="remind_by_date">Tanggal</string>
+    <string name="remind_by_both">Keduanya</string>
+    <string name="field_next_km">Target Odometer Berikutnya (km)</string>
+    <string name="field_next_date">Tanggal Servis Berikutnya</string>
+    <string name="service_saved">Servis berhasil dicatat</string>
+    <string name="status_on_track">On track</string>
+    <string name="status_due_soon">Segera servis</string>
+    <string name="status_overdue">Lewat jadwal</string>
+    <string name="status_no_service">Belum ada servis</string>
+    <string name="service_at_odometer">di %1$s km</string>
+    <string name="no_vehicle_to_service">Tambahkan kendaraan dulu sebelum mencatat servis</string>
+
+    <!-- Fuel -->
+    <string name="fuel_list_title">Bensin</string>
+    <string name="fuel_empty_title">Belum ada catatan bensin</string>
+    <string name="fuel_empty_subtitle">Tap tombol + untuk mencatat pengisian bensin</string>
+    <string name="add_fuel_title">Isi Bensin</string>
+    <string name="field_liters">Liter</string>
+    <string name="field_price_per_liter">Harga per Liter (Rp)</string>
+    <string name="field_total_cost">Total Biaya</string>
+    <string name="field_fuel_type">Jenis BBM</string>
+    <string name="monthly_avg_kmpl">Rata-rata %1$s</string>
+    <string name="fuel_saved">Bensin berhasil dicatat</string>
+
+    <!-- Workshop -->
+    <string name="workshop_list_title">Bengkel</string>
+    <string name="workshop_empty_title">Belum ada bengkel tersimpan</string>
+    <string name="workshop_empty_subtitle">Tap tombol + untuk menyimpan bengkel favorit</string>
+    <string name="add_workshop_title">Tambah Bengkel</string>
+    <string name="edit_workshop_title">Edit Bengkel</string>
+    <string name="field_workshop_name">Nama Bengkel</string>
+    <string name="field_address">Alamat</string>
+    <string name="field_rating">Rating</string>
+    <string name="field_specialization">Spesialisasi</string>
+    <string name="search_workshop">Cari bengkel…</string>
+    <string name="use_current_location">Gunakan Lokasi Sekarang</string>
+    <string name="location_saved">Lokasi tersimpan: %1$s, %2$s</string>
+    <string name="location_permission_needed">Izin lokasi diperlukan</string>
+    <string name="open_in_maps">Buka di Maps</string>
+    <string name="spec_oli">Oli &amp; Filter</string>
+    <string name="spec_ban">Ban</string>
+    <string name="spec_listrik">Kelistrikan</string>
+    <string name="spec_body">Body &amp; Cat</string>
+    <string name="spec_umum">Umum</string>
+    <string name="workshop_saved">Bengkel berhasil disimpan</string>
+    <string name="workshop_deleted">Bengkel berhasil dihapus</string>
+    <string name="delete_workshop_title">Hapus Bengkel?</string>
+    <string name="delete_workshop_message">Bengkel ini akan dihapus dari daftar tersimpan.</string>
+    <string name="rating_star">Bintang %1$d</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_greeting">Halo!</string>
+    <string name="dashboard_empty_title">Belum ada kendaraan</string>
+    <string name="dashboard_empty_subtitle">Tambahkan kendaraan pertamamu</string>
+    <string name="add_first_vehicle">Tambah Kendaraan</string>
+    <string name="summary_fuel_month">Bensin bulan ini</string>
+    <string name="summary_next_service">Servis berikutnya</string>
+    <string name="km_remaining">%1$s km lagi</string>
+    <string name="not_set">Belum diset</string>
+    <string name="my_vehicles">Kendaraanku</string>
+    <string name="see_all">Lihat semua</string>
+    <string name="quick_add_service">Catat servis</string>
+    <string name="quick_add_fuel">Isi bensin</string>
+    <string name="pick_vehicle">Pilih Kendaraan</string>
+    <string name="unit_km">km</string>
+    <string name="field_fill_date">Tanggal Pengisian</string>
+    <string name="cd_notifications">Notifikasi</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Pengingat Servis</string>
+    <string name="notif_channel_desc">Pemberitahuan saat servis kendaraan sudah dekat atau terlewat</string>
+    <string name="notif_title">AutoBook — Reminder Servis</string>
+    <string name="notif_due_soon">Servis %1$s sudah dekat — segera jadwalkan servis</string>
+    <string name="notif_overdue">Servis %1$s sudah lewat jadwal!</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_add">Tambah</string>
+    <string name="cd_back">Kembali</string>
+    <string name="cd_search">Cari</string>
+</resources>
