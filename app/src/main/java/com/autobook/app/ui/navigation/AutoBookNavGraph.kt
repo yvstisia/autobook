@@ -20,7 +20,9 @@ import com.autobook.app.ui.screen.DashboardScreen
 import com.autobook.app.ui.screen.EditVehicleScreen
 import com.autobook.app.ui.screen.EditWorkshopScreen
 import com.autobook.app.ui.screen.FuelListScreen
+import com.autobook.app.ui.screen.OnboardingScreen
 import com.autobook.app.ui.screen.ServiceListScreen
+import com.autobook.app.ui.screen.SettingsScreen
 import com.autobook.app.ui.screen.VehicleListScreen
 import com.autobook.app.ui.screen.WorkshopListScreen
 import com.autobook.app.ui.viewmodel.DashboardViewModel
@@ -29,6 +31,8 @@ import com.autobook.app.ui.viewmodel.FuelViewModel
 import com.autobook.app.ui.viewmodel.FuelViewModelFactory
 import com.autobook.app.ui.viewmodel.ServiceViewModel
 import com.autobook.app.ui.viewmodel.ServiceViewModelFactory
+import com.autobook.app.ui.viewmodel.SettingsViewModel
+import com.autobook.app.ui.viewmodel.SettingsViewModelFactory
 import com.autobook.app.ui.viewmodel.VehicleViewModel
 import com.autobook.app.ui.viewmodel.VehicleViewModelFactory
 import com.autobook.app.ui.viewmodel.WorkshopViewModel
@@ -38,6 +42,7 @@ import com.autobook.app.ui.viewmodel.WorkshopViewModelFactory
 fun AutoBookNavGraph(
     navController: NavHostController,
     container: AppContainer,
+    startDestination: String,
     onShowMessage: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -49,9 +54,33 @@ fun AutoBookNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Dashboard.route,
+        startDestination = startDestination,
         modifier = modifier
     ) {
+        // --- Onboarding (first run) ---
+        composable(Screen.Onboarding.route) {
+            val vm: SettingsViewModel =
+                viewModel(factory = SettingsViewModelFactory(container.userPreferencesRepository))
+            OnboardingScreen(
+                viewModel = vm,
+                onDone = {
+                    navController.navigate(Screen.Dashboard.route) {
+                        popUpTo(Screen.Onboarding.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // --- Settings ---
+        composable(Screen.Settings.route) {
+            val vm: SettingsViewModel =
+                viewModel(factory = SettingsViewModelFactory(container.userPreferencesRepository))
+            SettingsScreen(
+                viewModel = vm,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         // --- Dashboard ---
         composable(Screen.Dashboard.route) {
             val vm: DashboardViewModel = viewModel(
@@ -61,8 +90,13 @@ fun AutoBookNavGraph(
                     container.fuelRepository
                 )
             )
+            val settingsVm: SettingsViewModel =
+                viewModel(factory = SettingsViewModelFactory(container.userPreferencesRepository))
+            val userName by settingsVm.userName.collectAsStateWithLifecycle()
             DashboardScreen(
                 viewModel = vm,
+                userName = userName,
+                onOpenSettings = { navController.navigate(Screen.Settings.route) },
                 onAddFirstVehicle = { navController.navigate(Screen.AddVehicle.route) },
                 onSeeAllVehicles = {
                     navController.navigate(Screen.VehicleList.route) {

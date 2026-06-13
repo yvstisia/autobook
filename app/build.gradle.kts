@@ -44,6 +44,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -88,4 +89,10 @@ dependencies {
 
     // WorkManager (background reminder check)
     implementation(libs.androidx.work.runtime.ktx)
+
+    // DataStore (user preferences: name, theme, language, currency)
+    implementation(libs.androidx.datastore.preferences)
+
+    // AppCompat (per-app language locales via AppCompatDelegate)
+    implementation(libs.androidx.appcompat)
 }

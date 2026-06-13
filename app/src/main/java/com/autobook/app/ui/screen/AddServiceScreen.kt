@@ -31,6 +31,7 @@ import com.autobook.app.ui.component.FormTextField
 import com.autobook.app.ui.component.SelectionChip
 import com.autobook.app.ui.theme.autoBookColors
 import com.autobook.app.ui.viewmodel.ServiceViewModel
+import com.autobook.app.util.LocalAppFormatter
 import com.autobook.app.util.joinCodes
 import com.autobook.app.util.remindByOptions
 import com.autobook.app.util.serviceTypeOptions
@@ -57,6 +58,7 @@ fun AddServiceScreen(
 
     var submitted by remember { mutableStateOf(false) }
 
+    val fmt = LocalAppFormatter.current
     val odometerValid = odometer.toIntOrNull() != null
     val typesValid = selectedTypes.isNotEmpty()
     val nextKmValid = nextKm.toIntOrNull() != null
@@ -76,7 +78,7 @@ fun AddServiceScreen(
                     serviceDate = serviceDate,
                     odometerAtService = odometer.toInt(),
                     serviceTypes = joinCodes(selectedTypes),
-                    cost = cost.toIntOrNull() ?: 0,
+                    cost = fmt.parseMoneyToMinorUnits(cost) ?: 0,
                     notes = notes.takeIf { it.isNotBlank() }
                 )
                 val reminderDraft = if (reminderOn) {
@@ -153,10 +155,10 @@ fun AddServiceScreen(
         }
 
         FormTextField(
-            label = stringResource(R.string.field_cost),
+            label = "${stringResource(R.string.field_cost)} (${fmt.currency.symbol})",
             value = cost,
-            onValueChange = { cost = it.filter(Char::isDigit) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            onValueChange = { input -> cost = input.filter { it.isDigit() || it == '.' || it == ',' } },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
         FormTextField(

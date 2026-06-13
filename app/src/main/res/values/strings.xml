@@ -44,7 +44,7 @@
     <string name="add_service_title">Catat Servis</string>
     <string name="field_service_date">Tanggal Servis</string>
     <string name="field_service_types">Jenis Servis</string>
-    <string name="field_cost">Biaya (Rp)</string>
+    <string name="field_cost">Biaya</string>
     <string name="field_notes">Catatan</string>
     <string name="service_type_oli">Ganti Oli</string>
     <string name="service_type_tune_up">Tune-Up</string>
@@ -73,7 +73,7 @@
     <string name="fuel_empty_subtitle">Tap tombol + untuk mencatat pengisian bensin</string>
     <string name="add_fuel_title">Isi Bensin</string>
     <string name="field_liters">Liter</string>
-    <string name="field_price_per_liter">Harga per Liter (Rp)</string>
+    <string name="field_price_per_liter">Harga per Liter</string>
     <string name="field_total_cost">Total Biaya</string>
     <string name="field_fuel_type">Jenis BBM</string>
     <string name="monthly_avg_kmpl">Rata-rata %1$s</string>
@@ -122,6 +122,31 @@
     <string name="unit_km">km</string>
     <string name="field_fill_date">Tanggal Pengisian</string>
     <string name="cd_notifications">Notifikasi</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="settings_section_profile">Profil</string>
+    <string name="settings_section_appearance">Tampilan</string>
+    <string name="settings_section_language">Bahasa</string>
+    <string name="settings_section_currency">Mata Uang</string>
+    <string name="settings_section_about">Tentang</string>
+    <string name="settings_name_label">Nama</string>
+    <string name="settings_name_placeholder">Masukkan nama kamu</string>
+    <string name="theme_system">Sistem</string>
+    <string name="theme_light">Terang</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="lang_system">Sistem</string>
+    <string name="lang_indonesian">Indonesia</string>
+    <string name="lang_english">English</string>
+    <string name="currency_change_note">Nilai yang sudah tersimpan tidak dikonversi otomatis.</string>
+    <string name="app_version">Versi %1$s</string>
+    <string name="cd_settings">Pengaturan</string>
+    <string name="greeting_named">Halo, %1$s!</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Selamat datang di AutoBook</string>
+    <string name="onboarding_subtitle">Pilih bahasa dan mata uang untuk memulai.</string>
+    <string name="onboarding_continue">Mulai</string>
 
     <!-- Notifications -->
     <string name="notif_channel_name">Pengingat Servis</string>

@@ -2,6 +2,7 @@ package com.autobook.app
 
 import android.content.Context
 import com.autobook.app.data.local.AppDatabase
+import com.autobook.app.data.preferences.UserPreferencesRepository
 import com.autobook.app.data.repository.FuelRepository
 import com.autobook.app.data.repository.ServiceRepository
 import com.autobook.app.data.repository.VehicleRepository
@@ -29,5 +30,9 @@ class AppContainer(context: Context) {
 
     val workshopRepository: WorkshopRepository by lazy {
         WorkshopRepository(database.workshopDao())
+    }
+
+    val userPreferencesRepository: UserPreferencesRepository by lazy {
+        UserPreferencesRepository(context)
     }
 }

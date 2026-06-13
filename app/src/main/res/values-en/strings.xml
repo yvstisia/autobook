@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AutoBook</string>
+    <string name="app_description">Track your vehicle service, fuel, and workshops - offline, no login.</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_dashboard">Home</string>
+    <string name="nav_vehicles">Vehicles</string>
+    <string name="nav_services">Service</string>
+    <string name="nav_fuel">Fuel</string>
+    <string name="nav_workshops">Workshops</string>
+
+    <!-- Common actions -->
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="error_required">Cannot be empty</string>
+    <string name="error_invalid_number">Enter a valid number</string>
+
+    <!-- Vehicle -->
+    <string name="vehicle_list_title">Vehicles</string>
+    <string name="vehicle_empty_title">No vehicles yet</string>
+    <string name="vehicle_empty_subtitle">Tap the + button to add your first vehicle</string>
+    <string name="add_vehicle_title">Add Vehicle</string>
+    <string name="edit_vehicle_title">Edit Vehicle</string>
+    <string name="field_nickname">Nickname</string>
+    <string name="field_type">Type</string>
+    <string name="type_motor">Motorcycle</string>
+    <string name="type_mobil">Car</string>
+    <string name="field_brand">Brand</string>
+    <string name="field_model">Model</string>
+    <string name="field_year">Year</string>
+    <string name="field_odometer">Odometer (km)</string>
+    <string name="photo_todo">Add Photo (coming soon)</string>
+    <string name="vehicle_saved">Vehicle saved</string>
+    <string name="vehicle_deleted">Vehicle deleted</string>
+    <string name="delete_vehicle_title">Delete Vehicle?</string>
+    <string name="delete_vehicle_message">All service, fuel, and reminder data for this vehicle will also be deleted.</string>
+
+    <!-- Service -->
+    <string name="service_list_title">Service</string>
+    <string name="service_empty_title">No service records yet</string>
+    <string name="service_empty_subtitle">Tap the + button to log your first service</string>
+    <string name="add_service_title">Log Service</string>
+    <string name="field_service_date">Service Date</string>
+    <string name="field_service_types">Service Types</string>
+    <string name="field_cost">Cost</string>
+    <string name="field_notes">Notes</string>
+    <string name="service_type_oli">Oil Change</string>
+    <string name="service_type_tune_up">Tune-Up</string>
+    <string name="service_type_ban">Tire Change</string>
+    <string name="service_type_rem">Brake Service</string>
+    <string name="service_type_aki">Battery Change</string>
+    <string name="service_type_lainnya">Other</string>
+    <string name="reminder_set">Set Reminder</string>
+    <string name="reminder_remind_by">Remind By</string>
+    <string name="remind_by_km">Distance</string>
+    <string name="remind_by_date">Date</string>
+    <string name="remind_by_both">Both</string>
+    <string name="field_next_km">Next Target Odometer (km)</string>
+    <string name="field_next_date">Next Service Date</string>
+    <string name="service_saved">Service logged</string>
+    <string name="status_on_track">On track</string>
+    <string name="status_due_soon">Service soon</string>
+    <string name="status_overdue">Overdue</string>
+    <string name="status_no_service">No service yet</string>
+    <string name="service_at_odometer">at %1$s km</string>
+    <string name="no_vehicle_to_service">Add a vehicle first before logging a service</string>
+
+    <!-- Fuel -->
+    <string name="fuel_list_title">Fuel</string>
+    <string name="fuel_empty_title">No fuel records yet</string>
+    <string name="fuel_empty_subtitle">Tap the + button to log a fill-up</string>
+    <string name="add_fuel_title">Add Fuel</string>
+    <string name="field_liters">Liters</string>
+    <string name="field_price_per_liter">Price per Liter</string>
+    <string name="field_total_cost">Total Cost</string>
+    <string name="field_fuel_type">Fuel Type</string>
+    <string name="monthly_avg_kmpl">Average %1$s</string>
+    <string name="fuel_saved">Fuel logged</string>
+
+    <!-- Workshop -->
+    <string name="workshop_list_title">Workshops</string>
+    <string name="workshop_empty_title">No saved workshops yet</string>
+    <string name="workshop_empty_subtitle">Tap the + button to save a favorite workshop</string>
+    <string name="add_workshop_title">Add Workshop</string>
+    <string name="edit_workshop_title">Edit Workshop</string>
+    <string name="field_workshop_name">Workshop Name</string>
+    <string name="field_address">Address</string>
+    <string name="field_rating">Rating</string>
+    <string name="field_specialization">Specialization</string>
+    <string name="search_workshop">Search workshops…</string>
+    <string name="use_current_location">Use Current Location</string>
+    <string name="location_saved">Location saved: %1$s, %2$s</string>
+    <string name="location_permission_needed">Location permission required</string>
+    <string name="open_in_maps">Open in Maps</string>
+    <string name="spec_oli">Oil &amp; Filter</string>
+    <string name="spec_ban">Tires</string>
+    <string name="spec_listrik">Electrical</string>
+    <string name="spec_body">Body &amp; Paint</string>
+    <string name="spec_umum">General</string>
+    <string name="workshop_saved">Workshop saved</string>
+    <string name="workshop_deleted">Workshop deleted</string>
+    <string name="delete_workshop_title">Delete Workshop?</string>
+    <string name="delete_workshop_message">This workshop will be removed from your saved list.</string>
+    <string name="rating_star">%1$d stars</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_greeting">Hello!</string>
+    <string name="dashboard_empty_title">No vehicles yet</string>
+    <string name="dashboard_empty_subtitle">Add your first vehicle</string>
+    <string name="add_first_vehicle">Add Vehicle</string>
+    <string name="summary_fuel_month">Fuel this month</string>
+    <string name="summary_next_service">Next service</string>
+    <string name="km_remaining">%1$s km left</string>
+    <string name="not_set">Not set</string>
+    <string name="my_vehicles">My Vehicles</string>
+    <string name="see_all">See all</string>
+    <string name="quick_add_service">Log service</string>
+    <string name="quick_add_fuel">Add fuel</string>
+    <string name="pick_vehicle">Pick Vehicle</string>
+    <string name="unit_km">km</string>
+    <string name="field_fill_date">Fill Date</string>
+    <string name="cd_notifications">Notifications</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_profile">Profile</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_section_language">Language</string>
+    <string name="settings_section_currency">Currency</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_name_label">Name</string>
+    <string name="settings_name_placeholder">Enter your name</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="lang_system">System</string>
+    <string name="lang_indonesian">Indonesia</string>
+    <string name="lang_english">English</string>
+    <string name="currency_change_note">Existing amounts are not converted automatically.</string>
+    <string name="app_version">Version %1$s</string>
+    <string name="cd_settings">Settings</string>
+    <string name="greeting_named">Hello, %1$s!</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">Welcome to AutoBook</string>
+    <string name="onboarding_subtitle">Choose your language and currency to get started.</string>
+    <string name="onboarding_continue">Get Started</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_name">Service Reminders</string>
+    <string name="notif_channel_desc">Notifications when a vehicle service is due soon or overdue</string>
+    <string name="notif_title">AutoBook - Service Reminder</string>
+    <string name="notif_due_soon">%1$s service is due soon - schedule it now</string>
+    <string name="notif_overdue">%1$s service is overdue!</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_add">Add</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_search">Search</string>
+</resources>

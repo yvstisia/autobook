@@ -5,12 +5,18 @@ package com.autobook.app.ui.navigation
  * helper to build a concrete path, and keep their argument name as a constant.
  */
 sealed class Screen(val route: String) {
+    // First-run onboarding (shown before Dashboard when not yet completed)
+    data object Onboarding : Screen("onboarding")
+
     // Bottom-nav destinations
     data object Dashboard : Screen("dashboard")
     data object VehicleList : Screen("vehicles")
     data object ServiceList : Screen("services")
     data object FuelList : Screen("fuel")
     data object WorkshopList : Screen("workshops")
+
+    // Settings (reached from the Dashboard gear icon; not in bottom nav)
+    data object Settings : Screen("settings")
 
     // Vehicle sub-screens
     data object AddVehicle : Screen("add_vehicle")

@@ -26,7 +26,7 @@ import com.autobook.app.ui.component.SelectionChip
 import com.autobook.app.ui.component.SummaryCard
 import com.autobook.app.ui.theme.autoBookColors
 import com.autobook.app.ui.viewmodel.FuelViewModel
-import com.autobook.app.util.formatRupiah
+import com.autobook.app.util.LocalAppFormatter
 import com.autobook.app.util.fuelTypes
 import kotlin.math.roundToInt
 
@@ -47,14 +47,17 @@ fun AddFuelScreen(
 
     var submitted by remember { mutableStateOf(false) }
 
+    val fmt = LocalAppFormatter.current
     val litersValue = liters.toFloatOrNull()
-    val priceValue = pricePerLiter.toIntOrNull()
+    // Price is entered in major units (decimals allowed for 2-decimal currencies) and
+    // stored as minor units, matching how all money is persisted.
+    val priceMinor = fmt.parseMoneyToMinorUnits(pricePerLiter)
     val odometerValid = odometer.toIntOrNull() != null
     val litersValid = litersValue != null && litersValue > 0f
-    val priceValid = priceValue != null && priceValue > 0
+    val priceValid = priceMinor != null && priceMinor > 0
 
-    val liveTotal = if (litersValue != null && priceValue != null) {
-        (litersValue * priceValue).roundToInt()
+    val liveTotal = if (litersValue != null && priceMinor != null) {
+        (litersValue * priceMinor).roundToInt()
     } else 0
 
     val savedMsg = stringResource(R.string.fuel_saved)
@@ -70,7 +73,7 @@ fun AddFuelScreen(
                     vehicleId = vehicleId,
                     fillDate = fillDate,
                     liters = litersValue!!,
-                    pricePerLiter = priceValue!!,
+                    pricePerLiter = priceMinor!!,
                     odometerAtFill = odometer.toInt(),
                     fuelType = fuelType
                 ) {
@@ -103,12 +106,12 @@ fun AddFuelScreen(
         )
 
         FormTextField(
-            label = stringResource(R.string.field_price_per_liter),
+            label = "${stringResource(R.string.field_price_per_liter)} (${fmt.currency.symbol})",
             value = pricePerLiter,
-            onValueChange = { pricePerLiter = it.filter(Char::isDigit) },
+            onValueChange = { input -> pricePerLiter = sanitizeDecimal(input) },
             isError = submitted && !priceValid,
             errorText = stringResource(R.string.error_invalid_number),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
         FormTextField(
@@ -146,7 +149,7 @@ fun AddFuelScreen(
         // Live total (liters × price) above the submit button (DESIGN.md §5.6)
         SummaryCard.Outlined(
             label = stringResource(R.string.field_total_cost),
-            value = formatRupiah(liveTotal),
+            value = fmt.money(liveTotal),
             modifier = Modifier.fillMaxWidth()
         )
     }

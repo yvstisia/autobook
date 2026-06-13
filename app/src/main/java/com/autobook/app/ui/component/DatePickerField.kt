@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.autobook.app.R
 import com.autobook.app.ui.theme.RadiusButton
 import com.autobook.app.ui.theme.autoBookColors
-import com.autobook.app.util.formatDate
+import com.autobook.app.util.LocalAppFormatter
 
 /**
  * Form-styled date field (label above, surfaceVariant container) that opens a
@@ -39,6 +39,7 @@ fun DatePickerField(
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    val fmt = LocalAppFormatter.current
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
@@ -51,7 +52,7 @@ fun DatePickerField(
         // overlay captures clicks to open the dialog.
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
-                value = formatDate(value),
+                value = fmt.date(value),
                 onValueChange = {},
                 readOnly = true,
                 enabled = false,

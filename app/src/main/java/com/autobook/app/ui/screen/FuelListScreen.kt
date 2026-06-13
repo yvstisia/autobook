@@ -41,10 +41,7 @@ import com.autobook.app.ui.theme.ScreenPaddingH
 import com.autobook.app.ui.theme.autoBookColors
 import com.autobook.app.ui.theme.numberMedium
 import com.autobook.app.ui.viewmodel.FuelViewModel
-import com.autobook.app.util.formatDate
-import com.autobook.app.util.formatKmPerLiter
-import com.autobook.app.util.formatLiters
-import com.autobook.app.util.formatRupiah
+import com.autobook.app.util.LocalAppFormatter
 
 @Composable
 fun FuelListScreen(
@@ -134,11 +131,12 @@ fun FuelListScreen(
 
 @Composable
 private fun MonthlySummaryCard(monthlyTotal: Int, avgKmpl: Float) {
+    val fmt = LocalAppFormatter.current
     SummaryCard.Filled(
         label = stringResource(R.string.summary_fuel_month),
-        value = formatRupiah(monthlyTotal),
+        value = fmt.money(monthlyTotal),
         supportingText = if (avgKmpl > 0f) {
-            stringResource(R.string.monthly_avg_kmpl, formatKmPerLiter(avgKmpl))
+            stringResource(R.string.monthly_avg_kmpl, fmt.kmPerLiter(avgKmpl))
         } else null,
         modifier = Modifier.fillMaxWidth().padding(bottom = CardGap)
     )
@@ -147,6 +145,7 @@ private fun MonthlySummaryCard(monthlyTotal: Int, avgKmpl: Float) {
 @Composable
 private fun FuelCard(log: FuelLog, modifier: Modifier = Modifier) {
     val colors = autoBookColors
+    val fmt = LocalAppFormatter.current
     AutoBookCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -165,24 +164,24 @@ private fun FuelCard(log: FuelLog, modifier: Modifier = Modifier) {
             }
             Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(
-                    text = "${log.fuelType} · ${formatLiters(log.liters)}",
+                    text = "${log.fuelType} · ${fmt.liters(log.liters)}",
                     style = MaterialTheme.typography.titleMedium,
                     color = colors.textPrimary
                 )
                 Text(
-                    text = formatDate(log.fillDate),
+                    text = fmt.date(log.fillDate),
                     style = MaterialTheme.typography.labelMedium,
                     color = colors.textSecondary
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = formatRupiah(log.totalCost),
+                    text = fmt.money(log.totalCost),
                     style = numberMedium,
                     color = colors.textPrimary
                 )
                 Text(
-                    text = formatKmPerLiter(log.kmPerLiter),
+                    text = fmt.kmPerLiter(log.kmPerLiter),
                     style = MaterialTheme.typography.labelSmall,
                     color = if (log.kmPerLiter > 0f) colors.success else colors.textTertiary
                 )

@@ -48,11 +48,9 @@ import com.autobook.app.ui.theme.ScreenPaddingH
 import com.autobook.app.ui.theme.autoBookColors
 import com.autobook.app.ui.theme.numberMedium
 import com.autobook.app.ui.viewmodel.ServiceViewModel
+import com.autobook.app.util.LocalAppFormatter
 import com.autobook.app.util.ReminderStatus
 import com.autobook.app.util.computeReminderStatus
-import com.autobook.app.util.formatDate
-import com.autobook.app.util.formatOdometer
-import com.autobook.app.util.formatRupiah
 import com.autobook.app.util.serviceTypeOptions
 
 @Composable
@@ -146,14 +144,15 @@ private fun ReminderCard(
     modifier: Modifier = Modifier
 ) {
     val colors = autoBookColors
+    val fmt = LocalAppFormatter.current
     val status = computeReminderStatus(currentOdometer, reminder.nextKm, reminder.nextDate)
     val accentColor = when (status) {
         ReminderStatus.ON_TRACK -> colors.success
         ReminderStatus.DUE_SOON -> colors.warning
         ReminderStatus.OVERDUE -> colors.danger
     }
-    val target = reminder.nextKm?.let { formatOdometer(it) + " " + stringResource(R.string.unit_km) }
-        ?: reminder.nextDate?.let { formatDate(it) }
+    val target = reminder.nextKm?.let { fmt.odometer(it) + " " + stringResource(R.string.unit_km) }
+        ?: reminder.nextDate?.let { fmt.date(it) }
         ?: stringResource(R.string.not_set)
 
     AutoBookCard(modifier = modifier) {
@@ -191,6 +190,7 @@ private val serviceTypeLabels = serviceTypeOptions.associate { it.code to it.lab
 @Composable
 private fun ServiceCard(record: ServiceRecord, modifier: Modifier = Modifier) {
     val colors = autoBookColors
+    val fmt = LocalAppFormatter.current
     val codes = record.serviceTypes.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
     AutoBookCard(modifier = modifier) {
@@ -200,13 +200,13 @@ private fun ServiceCard(record: ServiceRecord, modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = formatDate(record.serviceDate),
+                text = fmt.date(record.serviceDate),
                 style = MaterialTheme.typography.labelMedium,
                 color = colors.textSecondary
             )
             if (record.cost > 0) {
                 Text(
-                    text = formatRupiah(record.cost),
+                    text = fmt.money(record.cost),
                     style = numberMedium,
                     color = colors.textPrimary
                 )
@@ -231,7 +231,7 @@ private fun ServiceCard(record: ServiceRecord, modifier: Modifier = Modifier) {
             }
         }
         Text(
-            text = stringResource(R.string.service_at_odometer, formatOdometer(record.odometerAtService)),
+            text = stringResource(R.string.service_at_odometer, fmt.odometer(record.odometerAtService)),
             style = MaterialTheme.typography.labelMedium,
             color = colors.textTertiary,
             modifier = Modifier.padding(top = 8.dp)

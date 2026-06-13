@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.DirectionsCar
 import androidx.compose.material.icons.outlined.LocalGasStation
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -58,10 +59,7 @@ import com.autobook.app.ui.theme.autoBookColors
 import com.autobook.app.ui.theme.numberMedium
 import com.autobook.app.ui.viewmodel.DashboardVehicleCard
 import com.autobook.app.ui.viewmodel.DashboardViewModel
-import com.autobook.app.util.formatDate
-import com.autobook.app.util.formatDayDate
-import com.autobook.app.util.formatOdometer
-import com.autobook.app.util.formatRupiah
+import com.autobook.app.util.LocalAppFormatter
 
 private enum class QuickAction { SERVICE, FUEL }
 
@@ -69,6 +67,8 @@ private enum class QuickAction { SERVICE, FUEL }
 @Composable
 fun DashboardScreen(
     viewModel: DashboardViewModel,
+    userName: String,
+    onOpenSettings: () -> Unit,
     onAddFirstVehicle: () -> Unit,
     onSeeAllVehicles: () -> Unit,
     onAddService: (Int) -> Unit,
@@ -90,10 +90,12 @@ fun DashboardScreen(
                 is UiState.Success -> {
                     val cards = s.data
                     if (cards.isEmpty()) {
-                        DashboardEmpty(onAddFirstVehicle)
+                        DashboardEmpty(onAddFirstVehicle, onOpenSettings)
                     } else {
                         DashboardContent(
                             cards = cards,
+                            userName = userName,
+                            onOpenSettings = onOpenSettings,
                             onSeeAllVehicles = onSeeAllVehicles,
                             onQuickService = {
                                 if (cards.size == 1) onAddService(cards.first().vehicle.id)
@@ -150,9 +152,29 @@ fun DashboardScreen(
 }
 
 @Composable
-private fun DashboardEmpty(onAddFirstVehicle: () -> Unit) {
+private fun DashboardEmpty(onAddFirstVehicle: () -> Unit, onOpenSettings: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Keep Settings reachable even before any vehicle exists.
+        SettingsIconButton(
+            onClick = onOpenSettings,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 20.dp, end = ScreenPaddingH)
+        )
+        Column(
+            modifier = Modifier.fillMaxSize().padding(ScreenPaddingH),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            EmptyStateInner(onAddFirstVehicle)
+        }
+    }
+}
+
+@Composable
+private fun EmptyStateInner(onAddFirstVehicle: () -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(ScreenPaddingH),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -179,10 +201,13 @@ private fun DashboardEmpty(onAddFirstVehicle: () -> Unit) {
 @Composable
 private fun DashboardContent(
     cards: List<DashboardVehicleCard>,
+    userName: String,
+    onOpenSettings: () -> Unit,
     onSeeAllVehicles: () -> Unit,
     onQuickService: () -> Unit,
     onQuickFuel: () -> Unit
 ) {
+    val fmt = LocalAppFormatter.current
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
@@ -192,7 +217,7 @@ private fun DashboardContent(
             bottom = BottomNavContentPadding
         )
     ) {
-        item { DashboardHeader() }
+        item { DashboardHeader(userName = userName, onOpenSettings = onOpenSettings) }
 
         item {
             Row(
@@ -201,7 +226,7 @@ private fun DashboardContent(
             ) {
                 SummaryCard.Filled(
                     label = stringResource(R.string.summary_fuel_month),
-                    value = formatRupiah(cards.sumOf { it.fuelCostThisMonth }),
+                    value = fmt.money(cards.sumOf { it.fuelCostThisMonth }),
                     modifier = Modifier.weight(1f)
                 )
                 SummaryCard.Outlined(
@@ -248,7 +273,8 @@ private fun DashboardContent(
 }
 
 @Composable
-private fun DashboardHeader() {
+private fun DashboardHeader(userName: String, onOpenSettings: () -> Unit) {
+    val fmt = LocalAppFormatter.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -256,37 +282,62 @@ private fun DashboardHeader() {
     ) {
         Column {
             Text(
-                text = formatDayDate(System.currentTimeMillis()),
+                text = fmt.dayDate(System.currentTimeMillis()),
                 style = MaterialTheme.typography.labelMedium,
                 color = autoBookColors.textSecondary
             )
             Text(
-                text = stringResource(R.string.dashboard_greeting),
+                text = if (userName.isBlank()) stringResource(R.string.dashboard_greeting)
+                else stringResource(R.string.greeting_named, userName),
                 style = MaterialTheme.typography.headlineLarge,
                 color = autoBookColors.textPrimary
             )
         }
-        // Notification affordance (non-functional placeholder per DESIGN.md §5.1).
-        Box(
-            modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = stringResource(R.string.cd_notifications),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(20.dp)
-            )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            SettingsIconButton(onClick = onOpenSettings)
+            // Notification affordance (non-functional placeholder per DESIGN.md §5.1).
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Notifications,
+                    contentDescription = stringResource(R.string.cd_notifications),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         }
+    }
+}
+
+/** Rounded gear button matching the header bell affordance. */
+@Composable
+private fun SettingsIconButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Settings,
+            contentDescription = stringResource(R.string.cd_settings),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
 @Composable
 private fun DashboardVehicleRow(card: DashboardVehicleCard, modifier: Modifier = Modifier) {
     val v = card.vehicle
+    val fmt = LocalAppFormatter.current
     AutoBookCard(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             VehicleIconChip(type = v.type)
@@ -303,7 +354,7 @@ private fun DashboardVehicleRow(card: DashboardVehicleCard, modifier: Modifier =
                 )
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = formatOdometer(v.currentOdometer),
+                        text = fmt.odometer(v.currentOdometer),
                         style = numberMedium,
                         color = autoBookColors.textPrimary
                     )
@@ -322,6 +373,7 @@ private fun DashboardVehicleRow(card: DashboardVehicleCard, modifier: Modifier =
 /** "X km lagi", a date, or "Belum diset" — nearest target across all vehicles. */
 @Composable
 private fun nearestReminderText(cards: List<DashboardVehicleCard>): String {
+    val fmt = LocalAppFormatter.current
     val kmCandidates = cards.mapNotNull { card ->
         card.reminder?.nextKm?.let { it - card.vehicle.currentOdometer }
     }
@@ -329,8 +381,8 @@ private fun nearestReminderText(cards: List<DashboardVehicleCard>): String {
 
     return when {
         kmCandidates.isNotEmpty() ->
-            stringResource(R.string.km_remaining, formatOdometer(kmCandidates.min().coerceAtLeast(0)))
-        dateCandidates.isNotEmpty() -> formatDate(dateCandidates.min())
+            stringResource(R.string.km_remaining, fmt.odometer(kmCandidates.min().coerceAtLeast(0)))
+        dateCandidates.isNotEmpty() -> fmt.date(dateCandidates.min())
         else -> stringResource(R.string.not_set)
     }
 }

@@ -37,7 +37,7 @@ import com.autobook.app.ui.theme.ScreenPaddingH
 import com.autobook.app.ui.theme.autoBookColors
 import com.autobook.app.ui.theme.numberMedium
 import com.autobook.app.ui.viewmodel.VehicleViewModel
-import com.autobook.app.util.formatOdometer
+import com.autobook.app.util.LocalAppFormatter
 
 @Composable
 fun VehicleListScreen(
@@ -106,6 +106,7 @@ private fun ScreenTitle() {
 
 @Composable
 private fun VehicleRow(vehicle: Vehicle, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val fmt = LocalAppFormatter.current
     AutoBookCard(modifier = modifier, onClick = onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             VehicleIconChip(type = vehicle.type)
@@ -122,7 +123,7 @@ private fun VehicleRow(vehicle: Vehicle, onClick: () -> Unit, modifier: Modifier
                 )
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = formatOdometer(vehicle.currentOdometer),
+                        text = fmt.odometer(vehicle.currentOdometer),
                         style = numberMedium,
                         color = autoBookColors.textPrimary
                     )
