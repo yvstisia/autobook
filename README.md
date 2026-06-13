@@ -11,9 +11,12 @@ Built for the Indonesian market (Bahasa Indonesia, Rupiah). Multi-language
 
 ## Screenshots
 
-<img width="776" height="1600" alt="WhatsApp Image 2026-06-13 at 07 51 52" src="https://github.com/user-attachments/assets/3bff4f6b-d43a-4d4a-8c47-0cadb3ca223f" />
-<img width="1080" height="2223" alt="WhatsApp Image 2026-06-13 at 07 51 51" src="https://github.com/user-attachments/assets/3ce6776f-6191-4ba1-b389-ff55dbeba01b" />
-<img width="777" height="1600" alt="24fda7b1-f060-468a-af14-44bf65d16be9" src="https://github.com/user-attachments/assets/e0a46072-fe52-4af2-865b-122c463e5b7d" />
+<div align="center">
+  <img width="300" alt="AutoBook - Screenshot 1" src="https://github.com/user-attachments/assets/75cf43ce-63b5-4e55-8ecc-f4260cddff39" />
+  <img width="300" alt="AutoBook - Screenshot 2" src="https://github.com/user-attachments/assets/9a130b30-ec8d-49de-a423-4cafd76f92d6" />
+  <img width="300" alt="AutoBook - Screenshot 3" src="https://github.com/user-attachments/assets/8317706a-295a-40e5-ab51-797a31d1410c" />
+</div>
+
 
 
 ---
