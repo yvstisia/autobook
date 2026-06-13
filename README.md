@@ -165,7 +165,6 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`
 - Data backup & restore (export/import)
 - Community workshop ratings
 - Receipt photo capture
-- STNK / insurance expiry reminders
 
 ---
 
