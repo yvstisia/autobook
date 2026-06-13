@@ -12,9 +12,9 @@ Built for the Indonesian market (Bahasa Indonesia, Rupiah). Multi-language
 ## Screenshots
 
 <div align="center">
-  <img width="300" alt="AutoBook - Screenshot 1" src="https://github.com/user-attachments/assets/75cf43ce-63b5-4e55-8ecc-f4260cddff39" />
-  <img width="300" alt="AutoBook - Screenshot 2" src="https://github.com/user-attachments/assets/9a130b30-ec8d-49de-a423-4cafd76f92d6" />
-  <img width="300" alt="AutoBook - Screenshot 3" src="https://github.com/user-attachments/assets/8317706a-295a-40e5-ab51-797a31d1410c" />
+  <img width="200" alt="AutoBook - Screenshot 1" src="https://github.com/user-attachments/assets/75cf43ce-63b5-4e55-8ecc-f4260cddff39" />
+  <img width="200" alt="AutoBook - Screenshot 2" src="https://github.com/user-attachments/assets/9a130b30-ec8d-49de-a423-4cafd76f92d6" />
+  <img width="200" alt="AutoBook - Screenshot 3" src="https://github.com/user-attachments/assets/8317706a-295a-40e5-ab51-797a31d1410c" />
 </div>
 
 
