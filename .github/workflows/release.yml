@@ -1,8 +1,18 @@
 name: Build & Release APK
 
-# Builds a debug-signed APK and attaches it to a GitHub Release whenever a
-# version tag (e.g. v1.5.0) is pushed. A debug APK is used so no signing
-# keystore/secrets are required; it is installable via sideload for testing.
+# Builds an APK and attaches it to a GitHub Release whenever a version tag
+# (e.g. v1.5.0) is pushed.
+#
+# Signing: if the four signing secrets below are configured on the repo, a
+# release-signed APK is built; otherwise it falls back to a debug APK so the
+# workflow still works without secrets.
+#
+# Required repo secrets for a signed build (Settings > Secrets and variables > Actions):
+#   KEYSTORE_BASE64    - base64 of the release keystore file
+#                        (PowerShell: [Convert]::ToBase64String([IO.File]::ReadAllBytes("autobook-release.keystore")) )
+#   KEYSTORE_PASSWORD  - store password
+#   KEY_ALIAS          - key alias (e.g. autobook)
+#   KEY_PASSWORD       - key password
 on:
   push:
     tags:
@@ -25,18 +35,48 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      # Installs the exact Gradle version this project targets. The repo has no
-      # committed Gradle wrapper, so we pin the version here instead of ./gradlew.
+      # The repo has no committed Gradle wrapper, so pin the version here.
       - name: Set up Gradle 8.10.2
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
 
-      - name: Build debug APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+      # Reconstruct the keystore + keystore.properties from secrets, if present.
+      - name: Configure signing
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/release.keystore"
+            {
+              echo "storeFile=$GITHUB_WORKSPACE/release.keystore"
+              echo "storePassword=$KEYSTORE_PASSWORD"
+              echo "keyAlias=$KEY_ALIAS"
+              echo "keyPassword=$KEY_PASSWORD"
+            } > "$GITHUB_WORKSPACE/keystore.properties"
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No KEYSTORE_BASE64 secret set — building a debug APK."
+          fi
 
-      - name: Stage APK artifact
-        run: cp app/build/outputs/apk/debug/app-debug.apk "autobook-${GITHUB_REF_NAME}-debug.apk"
+      - name: Build signed release APK
+        if: steps.signing.outputs.signed == 'true'
+        run: |
+          gradle assembleRelease --no-daemon --stacktrace
+          cp app/build/outputs/apk/release/app-release.apk "autobook-${GITHUB_REF_NAME}.apk"
+          echo "APK_FILE=autobook-${GITHUB_REF_NAME}.apk" >> "$GITHUB_ENV"
+
+      - name: Build debug APK (no signing secrets)
+        if: steps.signing.outputs.signed != 'true'
+        run: |
+          gradle assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk "autobook-${GITHUB_REF_NAME}-debug.apk"
+          echo "APK_FILE=autobook-${GITHUB_REF_NAME}-debug.apk" >> "$GITHUB_ENV"
 
       - name: Upload APK to the GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -44,8 +84,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
-            gh release upload "${GITHUB_REF_NAME}" "autobook-${GITHUB_REF_NAME}-debug.apk" --clobber
+            gh release upload "${GITHUB_REF_NAME}" "${APK_FILE}" --clobber
           else
-            gh release create "${GITHUB_REF_NAME}" "autobook-${GITHUB_REF_NAME}-debug.apk" \
+            gh release create "${GITHUB_REF_NAME}" "${APK_FILE}" \
               --title "AutoBook ${GITHUB_REF_NAME}" --generate-notes
           fi
