@@ -62,7 +62,9 @@ fun VehicleListScreen(
                 is UiState.Success -> {
                     if (s.data.isEmpty()) {
                         Column(modifier = Modifier.fillMaxSize()) {
-                            ScreenTitle()
+                            // Empty state has no LazyColumn contentPadding, so the title
+                            // needs the horizontal inset applied directly.
+                            ScreenTitle(Modifier.padding(start = ScreenPaddingH))
                             EmptyState(
                                 icon = Icons.Outlined.DirectionsCar,
                                 title = stringResource(R.string.vehicle_empty_title),
@@ -95,12 +97,12 @@ fun VehicleListScreen(
 }
 
 @Composable
-private fun ScreenTitle() {
+private fun ScreenTitle(modifier: Modifier = Modifier) {
     Text(
         text = stringResource(R.string.vehicle_list_title),
         style = MaterialTheme.typography.headlineLarge,
         color = autoBookColors.textPrimary,
-        modifier = Modifier.padding(top = 20.dp, bottom = 16.dp, start = 0.dp)
+        modifier = modifier.padding(top = 20.dp, bottom = 16.dp)
     )
 }
 
