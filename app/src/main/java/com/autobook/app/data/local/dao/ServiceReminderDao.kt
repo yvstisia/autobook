@@ -25,6 +25,10 @@ interface ServiceReminderDao {
     @Query("SELECT * FROM service_reminder WHERE isDone = 0")
     suspend fun getAllActiveReminders(): List<ServiceReminder>
 
+    /** Reactive variant of [getAllActiveReminders] for the in-app notifications inbox. */
+    @Query("SELECT * FROM service_reminder WHERE isDone = 0")
+    fun getAllActiveRemindersFlow(): Flow<List<ServiceReminder>>
+
     @Query("UPDATE service_reminder SET isDone = 1 WHERE id = :reminderId")
     suspend fun markReminderDone(reminderId: Int)
 

@@ -22,6 +22,7 @@ import com.autobook.app.ui.screen.EditServiceScreen
 import com.autobook.app.ui.screen.EditVehicleScreen
 import com.autobook.app.ui.screen.EditWorkshopScreen
 import com.autobook.app.ui.screen.FuelListScreen
+import com.autobook.app.ui.screen.NotificationsScreen
 import com.autobook.app.ui.screen.OnboardingScreen
 import com.autobook.app.ui.screen.ServiceListScreen
 import com.autobook.app.ui.screen.SettingsScreen
@@ -31,6 +32,8 @@ import com.autobook.app.ui.viewmodel.DashboardViewModel
 import com.autobook.app.ui.viewmodel.DashboardViewModelFactory
 import com.autobook.app.ui.viewmodel.FuelViewModel
 import com.autobook.app.ui.viewmodel.FuelViewModelFactory
+import com.autobook.app.ui.viewmodel.NotificationsViewModel
+import com.autobook.app.ui.viewmodel.NotificationsViewModelFactory
 import com.autobook.app.ui.viewmodel.ServiceViewModel
 import com.autobook.app.ui.viewmodel.ServiceViewModelFactory
 import com.autobook.app.ui.viewmodel.SettingsViewModel
@@ -83,6 +86,20 @@ fun AutoBookNavGraph(
             )
         }
 
+        // --- Notifications inbox ---
+        composable(Screen.Notifications.route) {
+            val vm: NotificationsViewModel = viewModel(
+                factory = NotificationsViewModelFactory(
+                    container.vehicleRepository,
+                    container.serviceRepository
+                )
+            )
+            NotificationsScreen(
+                viewModel = vm,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         // --- Dashboard ---
         composable(Screen.Dashboard.route) {
             val vm: DashboardViewModel = viewModel(
@@ -99,6 +116,7 @@ fun AutoBookNavGraph(
                 viewModel = vm,
                 userName = userName,
                 onOpenSettings = { navController.navigate(Screen.Settings.route) },
+                onOpenNotifications = { navController.navigate(Screen.Notifications.route) },
                 onAddFirstVehicle = { navController.navigate(Screen.AddVehicle.route) },
                 onSeeAllVehicles = {
                     navController.navigate(Screen.VehicleList.route) {
@@ -176,6 +194,7 @@ fun AutoBookNavGraph(
                 vehicleId = id,
                 vehicleName = serviceVehicle?.nickname ?: "",
                 vehicleType = serviceVehicle?.type ?: "motor",
+                vehicleCurrentOdometer = serviceVehicle?.currentOdometer ?: 0,
                 onBack = { navController.popBackStack() },
                 onShowMessage = onShowMessage
             )
@@ -211,10 +230,12 @@ fun AutoBookNavGraph(
         ) { entry ->
             val id = entry.arguments?.getInt(Screen.AddFuel.ARG_VEHICLE_ID) ?: return@composable
             val vm: FuelViewModel = viewModel(factory = FuelViewModelFactory(container.fuelRepository, container.vehicleRepository))
+            val fuelVehicle = vehicles.firstOrNull { it.id == id }
             AddFuelScreen(
                 viewModel = vm,
                 vehicleId = id,
-                vehicleName = vehicles.firstOrNull { it.id == id }?.nickname ?: "",
+                vehicleName = fuelVehicle?.nickname ?: "",
+                vehicleCurrentOdometer = fuelVehicle?.currentOdometer ?: 0,
                 onBack = { navController.popBackStack() },
                 onShowMessage = onShowMessage
             )

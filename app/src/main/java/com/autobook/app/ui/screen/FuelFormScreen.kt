@@ -43,6 +43,7 @@ import kotlin.math.roundToInt
 fun FuelFormScreen(
     @StringRes titleRes: Int,
     vehicleName: String,
+    vehicleCurrentOdometer: Int,
     initial: FuelLog?,
     onSubmit: (fillDate: Long, liters: Float, pricePerLiterMinor: Int, odometerAtFill: Int, fuelType: String) -> Unit,
     onBack: () -> Unit,
@@ -62,6 +63,7 @@ fun FuelFormScreen(
     val litersValue = liters.toFloatOrNull()
     val priceMinor = fmt.parseMoneyToMinorUnits(pricePerLiter)
     val odometerValid = odometer.toIntOrNull() != null
+    val odometerLow = odometer.toIntOrNull()?.let { it < vehicleCurrentOdometer } ?: false
     val litersValid = litersValue != null && litersValue > 0f
     val priceValid = priceMinor != null && priceMinor > 0
 
@@ -113,14 +115,24 @@ fun FuelFormScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
-        FormTextField(
-            label = stringResource(R.string.field_odometer),
-            value = odometer,
-            onValueChange = { odometer = it.filter(Char::isDigit).take(ODOMETER_MAX_DIGITS) },
-            isError = submitted && !odometerValid,
-            errorText = stringResource(R.string.error_invalid_number),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
+        Column {
+            FormTextField(
+                label = stringResource(R.string.field_odometer),
+                value = odometer,
+                onValueChange = { odometer = it.filter(Char::isDigit).take(ODOMETER_MAX_DIGITS) },
+                isError = submitted && !odometerValid,
+                errorText = stringResource(R.string.error_invalid_number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            if (odometerLow) {
+                Text(
+                    text = stringResource(R.string.odometer_warning_low),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = autoBookColors.warning,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
 
         Column {
             Text(

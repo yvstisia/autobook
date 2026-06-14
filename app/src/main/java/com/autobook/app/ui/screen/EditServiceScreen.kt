@@ -43,6 +43,7 @@ fun EditServiceScreen(
             vehicleId = loaded.vehicleId,
             vehicleName = vehicle?.nickname ?: "",
             vehicleType = vehicle?.type ?: "motor",
+            vehicleCurrentOdometer = vehicle?.currentOdometer ?: 0,
             initial = loaded,
             onBack = onBack,
             onSubmit = { rec, reminders ->

@@ -37,10 +37,11 @@ fun EditFuelScreen(
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     } else {
-        val vehicleName = vehicles.firstOrNull { it.id == loaded.vehicleId }?.nickname ?: ""
+        val vehicle = vehicles.firstOrNull { it.id == loaded.vehicleId }
         FuelFormScreen(
             titleRes = R.string.edit_fuel_title,
-            vehicleName = vehicleName,
+            vehicleName = vehicle?.nickname ?: "",
+            vehicleCurrentOdometer = vehicle?.currentOdometer ?: 0,
             initial = loaded,
             onBack = onBack,
             onSubmit = { fillDate, liters, priceMinor, odometerAtFill, fuelType ->

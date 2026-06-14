@@ -10,6 +10,7 @@ fun AddFuelScreen(
     viewModel: FuelViewModel,
     vehicleId: Int,
     vehicleName: String,
+    vehicleCurrentOdometer: Int,
     onBack: () -> Unit,
     onShowMessage: (String) -> Unit
 ) {
@@ -17,6 +18,7 @@ fun AddFuelScreen(
     FuelFormScreen(
         titleRes = R.string.add_fuel_title,
         vehicleName = vehicleName,
+        vehicleCurrentOdometer = vehicleCurrentOdometer,
         initial = null,
         onBack = onBack,
         onSubmit = { fillDate, liters, priceMinor, odometerAtFill, fuelType ->

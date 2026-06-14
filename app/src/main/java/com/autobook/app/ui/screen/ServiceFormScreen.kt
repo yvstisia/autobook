@@ -53,6 +53,7 @@ fun ServiceFormScreen(
     vehicleId: Int,
     vehicleName: String,
     vehicleType: String,
+    vehicleCurrentOdometer: Int,
     initial: ServiceRecord?,
     onSubmit: (ServiceRecord, List<ServiceReminder>) -> Unit,
     onBack: () -> Unit,
@@ -69,7 +70,7 @@ fun ServiceFormScreen(
     var notes by remember { mutableStateOf(initial?.notes ?: "") }
 
     var reminderMode by remember { mutableStateOf(ReminderMode.AUTO) }
-    var remindBy by remember { mutableStateOf("km") }
+    var remindBy by remember { mutableStateOf("both") }
     var nextKm by remember { mutableStateOf("") }
     var nextDate by remember { mutableStateOf(System.currentTimeMillis()) }
 
@@ -77,6 +78,7 @@ fun ServiceFormScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val odometerValid = odometer.toIntOrNull() != null
+    val odometerLow = odometer.toIntOrNull()?.let { it < vehicleCurrentOdometer } ?: false
     val typesValid = selectedTypes.isNotEmpty()
     val nextKmValid = nextKm.toIntOrNull() != null
     val reminderAvailable = selectedTypes.any { it in AutoReminderCalculator.PREDICTABLE_TYPES }
@@ -107,7 +109,8 @@ fun ServiceFormScreen(
                         vehicleId = vehicleId,
                         serviceDate = serviceDate,
                         odometerAtService = odometer.toInt(),
-                        selectedTypes = selectedTypes
+                        selectedTypes = selectedTypes,
+                        remindBy = remindBy
                     )
                     ReminderMode.MANUAL -> listOf(
                         ServiceReminder(
@@ -138,14 +141,24 @@ fun ServiceFormScreen(
             allowFuture = false
         )
 
-        FormTextField(
-            label = stringResource(R.string.field_odometer),
-            value = odometer,
-            onValueChange = { odometer = it.filter(Char::isDigit).take(ODOMETER_MAX_DIGITS) },
-            isError = submitted && !odometerValid,
-            errorText = stringResource(R.string.error_invalid_number),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
+        Column {
+            FormTextField(
+                label = stringResource(R.string.field_odometer),
+                value = odometer,
+                onValueChange = { odometer = it.filter(Char::isDigit).take(ODOMETER_MAX_DIGITS) },
+                isError = submitted && !odometerValid,
+                errorText = stringResource(R.string.error_invalid_number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            if (odometerLow) {
+                Text(
+                    text = stringResource(R.string.odometer_warning_low),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = autoBookColors.warning,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
 
         Column {
             Text(
@@ -216,6 +229,28 @@ fun ServiceFormScreen(
                 )
             }
 
+            // Remind-by basis applies to both Automatic (preference for generated reminders)
+            // and Manual (the custom reminder's basis).
+            if (reminderMode != ReminderMode.OFF) {
+                Column {
+                    Text(
+                        text = stringResource(R.string.reminder_remind_by),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = autoBookColors.textSecondary,
+                        modifier = Modifier.padding(bottom = 6.dp)
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        remindByOptions.forEach { option ->
+                            SelectionChip(
+                                selected = remindBy == option.code,
+                                onClick = { remindBy = option.code },
+                                label = stringResource(option.labelRes)
+                            )
+                        }
+                    }
+                }
+            }
+
             when (reminderMode) {
                 ReminderMode.AUTO -> Text(
                     text = stringResource(R.string.reminder_auto_hint),
@@ -224,24 +259,6 @@ fun ServiceFormScreen(
                 )
 
                 ReminderMode.MANUAL -> {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.reminder_remind_by),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = autoBookColors.textSecondary,
-                            modifier = Modifier.padding(bottom = 6.dp)
-                        )
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            remindByOptions.forEach { option ->
-                                SelectionChip(
-                                    selected = remindBy == option.code,
-                                    onClick = { remindBy = option.code },
-                                    label = stringResource(option.labelRes)
-                                )
-                            }
-                        }
-                    }
-
                     if (remindBy == "km" || remindBy == "both") {
                         FormTextField(
                             label = stringResource(R.string.field_next_km),

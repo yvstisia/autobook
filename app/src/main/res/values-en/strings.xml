@@ -16,6 +16,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="error_required">Cannot be empty</string>
     <string name="error_invalid_number">Enter a valid number</string>
+    <string name="odometer_warning_low">Odometer is lower than the last record. Are you sure?</string>
 
     <!-- Vehicle -->
     <string name="vehicle_list_title">Vehicles</string>
@@ -162,6 +163,11 @@
     <string name="onboarding_title">Welcome to AutoBook</string>
     <string name="onboarding_subtitle">Choose your language and currency to get started.</string>
     <string name="onboarding_continue">Get Started</string>
+
+    <!-- Notifications inbox -->
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_empty">No notifications</string>
+    <string name="notifications_empty_subtitle">Service alerts will show up here</string>
 
     <!-- Notifications -->
     <string name="notif_channel_name">Service Reminders</string>

@@ -48,4 +48,7 @@ class ServiceRepository(
 
     suspend fun getAllActiveReminders(): List<ServiceReminder> =
         serviceReminderDao.getAllActiveReminders()
+
+    fun getAllActiveRemindersFlow(): Flow<List<ServiceReminder>> =
+        serviceReminderDao.getAllActiveRemindersFlow()
 }

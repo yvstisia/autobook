@@ -18,37 +18,50 @@ object AutoReminderCalculator {
     /** Service types that can produce a reminder. Others are history-only. */
     val PREDICTABLE_TYPES = setOf("oli", "tune_up", "aki")
 
-    private data class Interval(val kmDelta: Int?, val monthsDelta: Int, val remindBy: String)
+    private data class Interval(val kmDelta: Int?, val monthsDelta: Int)
 
     /**
      * Builds reminders for the predictable types among [selectedTypes]. The returned rows
      * have serviceRecordId = 0; the caller links them to the inserted record's id.
+     *
+     * [remindBy] is the user's chosen basis ("km", "date", or "both"). A type that has no km
+     * interval (battery) always falls back to date, even when "km" is requested.
      */
     fun generate(
         vehicleType: String,
         vehicleId: Int,
         serviceDate: Long,
         odometerAtService: Int,
-        selectedTypes: Collection<String>
+        selectedTypes: Collection<String>,
+        remindBy: String
     ): List<ServiceReminder> {
         val isMobil = vehicleType == "mobil"
         return selectedTypes.mapNotNull { type ->
             val interval = intervalFor(type, isMobil) ?: return@mapNotNull null
+            val baseKm = interval.kmDelta?.let { odometerAtService + it }
+            val baseDate = addMonths(serviceDate, interval.monthsDelta)
+            val (finalRemindBy, nextKm, nextDate) = when {
+                remindBy == "km" && baseKm != null -> Triple("km", baseKm, null)
+                remindBy == "km" -> Triple("date", null, baseDate) // no km available for this type
+                remindBy == "date" -> Triple("date", null, baseDate)
+                baseKm != null -> Triple("both", baseKm, baseDate)
+                else -> Triple("date", null, baseDate)
+            }
             ServiceReminder(
                 serviceRecordId = 0,
                 vehicleId = vehicleId,
                 serviceType = type,
-                remindBy = interval.remindBy,
-                nextKm = interval.kmDelta?.let { odometerAtService + it },
-                nextDate = addMonths(serviceDate, interval.monthsDelta)
+                remindBy = finalRemindBy,
+                nextKm = nextKm,
+                nextDate = nextDate
             )
         }
     }
 
     private fun intervalFor(type: String, isMobil: Boolean): Interval? = when (type) {
-        "oli" -> if (isMobil) Interval(5000, 6, "both") else Interval(2000, 2, "both")
-        "tune_up" -> if (isMobil) Interval(10000, 6, "both") else Interval(8000, 6, "both")
-        "aki" -> if (isMobil) Interval(null, 24, "date") else Interval(null, 18, "date")
+        "oli" -> if (isMobil) Interval(5000, 6) else Interval(2000, 2)
+        "tune_up" -> if (isMobil) Interval(10000, 6) else Interval(8000, 6)
+        "aki" -> if (isMobil) Interval(null, 24) else Interval(null, 18)
         else -> null // ban, rem, lainnya -> history only
     }
 

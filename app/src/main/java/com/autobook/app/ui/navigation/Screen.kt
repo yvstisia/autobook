@@ -18,6 +18,9 @@ sealed class Screen(val route: String) {
     // Settings (reached from the Dashboard gear icon; not in bottom nav)
     data object Settings : Screen("settings")
 
+    // Notifications inbox (reached from the Dashboard bell icon; not in bottom nav)
+    data object Notifications : Screen("notifications")
+
     // Vehicle sub-screens
     data object AddVehicle : Screen("add_vehicle")
     data object EditVehicle : Screen("edit_vehicle/{vehicleId}") {

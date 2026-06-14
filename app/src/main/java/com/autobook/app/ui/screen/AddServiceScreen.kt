@@ -11,6 +11,7 @@ fun AddServiceScreen(
     vehicleId: Int,
     vehicleName: String,
     vehicleType: String,
+    vehicleCurrentOdometer: Int,
     onBack: () -> Unit,
     onShowMessage: (String) -> Unit
 ) {
@@ -20,6 +21,7 @@ fun AddServiceScreen(
         vehicleId = vehicleId,
         vehicleName = vehicleName,
         vehicleType = vehicleType,
+        vehicleCurrentOdometer = vehicleCurrentOdometer,
         initial = null,
         onBack = onBack,
         onSubmit = { record, reminders ->

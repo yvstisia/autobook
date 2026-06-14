@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -60,6 +62,7 @@ import com.autobook.app.ui.theme.numberMedium
 import com.autobook.app.ui.viewmodel.DashboardVehicleCard
 import com.autobook.app.ui.viewmodel.DashboardViewModel
 import com.autobook.app.util.LocalAppFormatter
+import com.autobook.app.util.ReminderStatus
 
 private enum class QuickAction { SERVICE, FUEL }
 
@@ -69,6 +72,7 @@ fun DashboardScreen(
     viewModel: DashboardViewModel,
     userName: String,
     onOpenSettings: () -> Unit,
+    onOpenNotifications: () -> Unit,
     onAddFirstVehicle: () -> Unit,
     onSeeAllVehicles: () -> Unit,
     onAddService: (Int) -> Unit,
@@ -90,12 +94,13 @@ fun DashboardScreen(
                 is UiState.Success -> {
                     val cards = s.data
                     if (cards.isEmpty()) {
-                        DashboardEmpty(onAddFirstVehicle, onOpenSettings)
+                        DashboardEmpty(onAddFirstVehicle, onOpenSettings, onOpenNotifications)
                     } else {
                         DashboardContent(
                             cards = cards,
                             userName = userName,
                             onOpenSettings = onOpenSettings,
+                            onOpenNotifications = onOpenNotifications,
                             onSeeAllVehicles = onSeeAllVehicles,
                             onQuickService = {
                                 if (cards.size == 1) onAddService(cards.first().vehicle.id)
@@ -152,15 +157,30 @@ fun DashboardScreen(
 }
 
 @Composable
-private fun DashboardEmpty(onAddFirstVehicle: () -> Unit, onOpenSettings: () -> Unit) {
+private fun DashboardEmpty(
+    onAddFirstVehicle: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenNotifications: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // Keep Settings reachable even before any vehicle exists.
-        SettingsIconButton(
-            onClick = onOpenSettings,
+        // Keep Settings and Notifications reachable even before any vehicle exists.
+        Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 20.dp, end = ScreenPaddingH)
-        )
+                .padding(top = 20.dp, end = ScreenPaddingH),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            HeaderIconButton(
+                icon = Icons.Outlined.Settings,
+                contentDescription = stringResource(R.string.cd_settings),
+                onClick = onOpenSettings
+            )
+            HeaderIconButton(
+                icon = Icons.Outlined.Notifications,
+                contentDescription = stringResource(R.string.cd_notifications),
+                onClick = onOpenNotifications
+            )
+        }
         Column(
             modifier = Modifier.fillMaxSize().padding(ScreenPaddingH),
             verticalArrangement = Arrangement.Center,
@@ -203,6 +223,7 @@ private fun DashboardContent(
     cards: List<DashboardVehicleCard>,
     userName: String,
     onOpenSettings: () -> Unit,
+    onOpenNotifications: () -> Unit,
     onSeeAllVehicles: () -> Unit,
     onQuickService: () -> Unit,
     onQuickFuel: () -> Unit
@@ -217,22 +238,38 @@ private fun DashboardContent(
             bottom = BottomNavContentPadding
         )
     ) {
-        item { DashboardHeader(userName = userName, onOpenSettings = onOpenSettings) }
+        item {
+            DashboardHeader(
+                userName = userName,
+                onOpenSettings = onOpenSettings,
+                onOpenNotifications = onOpenNotifications
+            )
+        }
 
         item {
+            val urgentCard = mostUrgentCard(cards)
+            val nextServiceLabel = if (urgentCard != null) {
+                "${stringResource(R.string.summary_next_service)} - ${urgentCard.vehicle.nickname}"
+            } else {
+                stringResource(R.string.summary_next_service)
+            }
+            // IntrinsicSize.Max + fillMaxHeight keeps both summary cards the same height.
             Row(
-                modifier = Modifier.fillMaxWidth().padding(top = SectionGap),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Max)
+                    .padding(top = SectionGap),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 SummaryCard.Filled(
                     label = stringResource(R.string.summary_fuel_month),
                     value = fmt.money(cards.sumOf { it.fuelCostThisMonth }),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
                 SummaryCard.Outlined(
-                    label = stringResource(R.string.summary_next_service),
-                    value = nearestReminderText(cards),
-                    modifier = Modifier.weight(1f)
+                    label = nextServiceLabel,
+                    value = reminderTargetText(urgentCard),
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
             }
         }
@@ -273,7 +310,11 @@ private fun DashboardContent(
 }
 
 @Composable
-private fun DashboardHeader(userName: String, onOpenSettings: () -> Unit) {
+private fun DashboardHeader(
+    userName: String,
+    onOpenSettings: () -> Unit,
+    onOpenNotifications: () -> Unit
+) {
     val fmt = LocalAppFormatter.current
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -294,29 +335,28 @@ private fun DashboardHeader(userName: String, onOpenSettings: () -> Unit) {
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            SettingsIconButton(onClick = onOpenSettings)
-            // Notification affordance (non-functional placeholder per DESIGN.md §5.1).
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Notifications,
-                    contentDescription = stringResource(R.string.cd_notifications),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+            HeaderIconButton(
+                icon = Icons.Outlined.Settings,
+                contentDescription = stringResource(R.string.cd_settings),
+                onClick = onOpenSettings
+            )
+            HeaderIconButton(
+                icon = Icons.Outlined.Notifications,
+                contentDescription = stringResource(R.string.cd_notifications),
+                onClick = onOpenNotifications
+            )
         }
     }
 }
 
-/** Rounded gear button matching the header bell affordance. */
+/** Rounded icon affordance used in the dashboard header (settings, notifications). */
 @Composable
-private fun SettingsIconButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun HeaderIconButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .size(40.dp)
@@ -326,8 +366,8 @@ private fun SettingsIconButton(onClick: () -> Unit, modifier: Modifier = Modifie
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = Icons.Outlined.Settings,
-            contentDescription = stringResource(R.string.cd_settings),
+            imageVector = icon,
+            contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.size(20.dp)
         )
@@ -370,19 +410,35 @@ private fun DashboardVehicleRow(card: DashboardVehicleCard, modifier: Modifier =
     }
 }
 
-/** "X km lagi", a date, or "Belum diset" — nearest target across all vehicles. */
-@Composable
-private fun nearestReminderText(cards: List<DashboardVehicleCard>): String {
-    val fmt = LocalAppFormatter.current
-    val kmCandidates = cards.mapNotNull { card ->
-        card.reminder?.nextKm?.let { it - card.vehicle.currentOdometer }
-    }
-    val dateCandidates = cards.mapNotNull { it.reminder?.nextDate }
+/** The most-urgent reminder card across all vehicles (worst status, then soonest target). */
+private fun mostUrgentCard(cards: List<DashboardVehicleCard>): DashboardVehicleCard? =
+    cards.filter { it.reminder != null && it.reminderStatus != null }
+        .minWithOrNull(
+            compareBy(
+                { card -> severityRank(card.reminderStatus!!) },
+                { card -> card.reminder!!.nextDate ?: Long.MAX_VALUE },
+                { card -> card.reminder!!.nextKm ?: Int.MAX_VALUE }
+            )
+        )
 
+private fun severityRank(status: ReminderStatus): Int = when (status) {
+    ReminderStatus.OVERDUE -> 0
+    ReminderStatus.DUE_SOON -> 1
+    ReminderStatus.ON_TRACK -> 2
+}
+
+/** Target text for the dashboard "next service" card: a date for date-based reminders, else km. */
+@Composable
+private fun reminderTargetText(card: DashboardVehicleCard?): String {
+    val fmt = LocalAppFormatter.current
+    val reminder = card?.reminder ?: return stringResource(R.string.not_set)
     return when {
-        kmCandidates.isNotEmpty() ->
-            stringResource(R.string.km_remaining, fmt.odometer(kmCandidates.min().coerceAtLeast(0)))
-        dateCandidates.isNotEmpty() -> fmt.date(dateCandidates.min())
+        reminder.remindBy == "date" && reminder.nextDate != null -> fmt.date(reminder.nextDate)
+        reminder.nextKm != null -> stringResource(
+            R.string.km_remaining,
+            fmt.odometer((reminder.nextKm - card.vehicle.currentOdometer).coerceAtLeast(0))
+        )
+        reminder.nextDate != null -> fmt.date(reminder.nextDate)
         else -> stringResource(R.string.not_set)
     }
 }

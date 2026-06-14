@@ -16,6 +16,7 @@
     <string name="action_cancel">Batal</string>
     <string name="error_required">Tidak boleh kosong</string>
     <string name="error_invalid_number">Masukkan angka yang valid</string>
+    <string name="odometer_warning_low">Odometer lebih kecil dari catatan terakhir. Yakin?</string>
 
     <!-- Vehicle -->
     <string name="vehicle_list_title">Kendaraan</string>
@@ -162,6 +163,11 @@
     <string name="onboarding_title">Selamat datang di AutoBook</string>
     <string name="onboarding_subtitle">Pilih bahasa dan mata uang untuk memulai.</string>
     <string name="onboarding_continue">Mulai</string>
+
+    <!-- Notifications inbox -->
+    <string name="notifications_title">Notifikasi</string>
+    <string name="notifications_empty">Tidak ada notifikasi</string>
+    <string name="notifications_empty_subtitle">Pemberitahuan servis akan muncul di sini</string>
 
     <!-- Notifications -->
     <string name="notif_channel_name">Pengingat Servis</string>
