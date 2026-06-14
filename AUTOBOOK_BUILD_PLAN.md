@@ -129,7 +129,7 @@ Create:
 2. ui/navigation/BottomNavItem.kt — data class for bottom nav items with route, label (@StringRes), and icon (ImageVector)
 
 3. ui/navigation/AutoBookNavGraph.kt — NavHost composable with all routes registered.
-   Bottom nav shows 5 tabs: Dashboard, Kendaraan, Servis, Bensin, Bengkel
+   Bottom nav shows 5 tabs: Dashboard, Vehicles, Service, Fuel, Workshops
    Use icons from Icons.Outlined (Home, DirectionsCar, Build, LocalGasStation, Store)
 
 4. Update MainActivity.kt to host AutoBookNavGraph inside a Scaffold with the bottom nav bar.
@@ -165,7 +165,7 @@ Create:
    - Tap a card → navigate to EditVehicle screen (placeholder for now)
 
 4. ui/screen/AddVehicleScreen.kt — Composable form with:
-   - Fields: nickname (TextField), type (SegmentedButton or RadioButton: Motor/Mobil),
+   - Fields: nickname (TextField), type (SegmentedButton or RadioButton: Motorcycle/Car),
      brand (TextField), model (TextField), year (TextField, numeric),
      current odometer in km (TextField, numeric)
    - Photo field: placeholder button (no camera logic yet, leave as TODO)
@@ -242,14 +242,14 @@ Create:
    - Vehicle pre-selected from nav argument (show vehicle name, non-editable)
    - Date picker (DatePickerDialog, default today)
    - Odometer at service (TextField, numeric)
-   - Service types: multi-select chips (Ganti Oli, Tune-Up, Ganti Ban, Servis Rem, Ganti Aki, Lainnya)
+   - Service types: multi-select chips (Oil Change, Tune-Up, Tire Replacement, Brake Service, Battery Replacement, Other)
    - Cost in Rp (TextField, numeric, optional)
    - Notes (TextField, multiline, optional)
    - Reminder section:
      - Toggle switch "Set reminder"
-     - If enabled: RemindBy selector (Jarak / Tanggal / Keduanya)
-     - If "Jarak" or "Keduanya": input next km target
-     - If "Tanggal" or "Keduanya": date picker for next service date
+     - If enabled: RemindBy selector (Distance / Date / Both)
+     - If "Distance" or "Both": input next km target
+     - If "Date" or "Both": date picker for next service date
    - Save button: validates required fields, saves ServiceRecord + ServiceReminder (if set), navigates back
 
 Add reminder status badge logic in a util/ReminderStatusUtil.kt:
@@ -332,7 +332,7 @@ Create:
    - Search bar at top (filters list in real time)
    - LazyColumn of workshop cards:
      - Name, address (if set), star rating (show filled/empty stars), specialization chips
-     - "Buka di Maps" button: if lat/lng set, opens Google Maps via Intent
+     - "Open in Maps" button: if lat/lng set, opens Google Maps via Intent
        Uri: "geo:lat,lng?q=lat,lng(WorkshopName)"
      - Tap card → EditWorkshopScreen(workshopId)
    - FloatingActionButton → AddWorkshopScreen
@@ -341,12 +341,12 @@ Create:
    - Name (TextField, required)
    - Address (TextField, optional, multiline)
    - GPS tag section:
-     - Button "Gunakan Lokasi Sekarang" — requests ACCESS_FINE_LOCATION permission,
+     - Button "Use Current Location" — requests ACCESS_FINE_LOCATION permission,
        then fetches last known location via FusedLocationProviderClient,
-       shows "Lokasi tersimpan: lat, lng" when successful
-     - Show "Izin lokasi diperlukan" message if permission denied
+       shows "Location saved: lat, lng" when successful
+     - Show "Location permission required" message if permission denied
    - Star rating (1–5, use clickable star icons)
-   - Specialization: multi-select chips (Oli & Filter, Ban, Kelistrikan, Body & Cat, Umum)
+   - Specialization: multi-select chips (Oil & Filter, Tires, Electrical, Body & Paint, General)
    - Notes (TextField, optional, multiline)
    - Save button validates name is not empty, calls ViewModel insert, navigates back
 
@@ -357,7 +357,7 @@ Add ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions to AndroidManife
 
 **What to verify:**
 - Workshop list shows with search filter working
-- "Buka di Maps" opens Google Maps correctly
+- "Open in Maps" opens Google Maps correctly
 - GPS tag button requests permission and stores coordinates
 - Add/Edit/Delete all work
 
@@ -383,14 +383,14 @@ Create:
 
 3. ui/screen/DashboardScreen.kt — Composable showing:
    - App name "AutoBook" in top app bar
-   - If no vehicles: empty state with illustration text and button "Tambah Kendaraan Pertama" → navigates to AddVehicleScreen
+   - If no vehicles: empty state with illustration text and button "Add First Vehicle" → navigates to AddVehicleScreen
    - If vehicles exist: LazyColumn of vehicle summary cards, each showing:
-     - Vehicle nickname + type badge (Motor/Mobil)
+     - Vehicle nickname + type badge (Motorcycle/Car)
      - Brand + Model + Year
-     - "Servis terakhir: X km yang lalu" or "Belum ada data servis"
+     - "Last service: X km ago" or "No service data"
      - Reminder status badge (On Track 🟢 / Due Soon 🟡 / Overdue 🔴) — only if reminder exists
-     - "Bensin bulan ini: Rp X.XXX" — only if fuel log exists this month
-   - Quick action buttons at bottom: "+ Catat Servis", "+ Isi Bensin"
+     - "Fuel this month: Rp X,XXX" — only if fuel log exists this month
+   - Quick action buttons at bottom: "+ Log Service", "+ Log Fuel"
      (these should show a vehicle picker bottom sheet if multiple vehicles exist)
 
 Make the dashboard the start destination in the NavGraph.
@@ -414,14 +414,14 @@ Create:
 1. util/NotificationHelper.kt
    - Creates notification channel "autobook_reminders" on app first launch
    - Function: showReminderNotification(context, vehicleNickname, message)
-     Shows a notification with title "AutoBook — Reminder Servis" and the message
+     Shows a notification with title "AutoBook — Service Reminder" and the message
 
 2. worker/ReminderCheckWorker.kt — WorkManager PeriodicWorkRequest:
    - Runs once per day
    - Queries all active ServiceReminders via AppDatabase directly (WorkManager context)
    - For each reminder, check ReminderStatusUtil
-   - If DUE_SOON: notify "Servis [vehicle] sudah dekat — segera jadwalkan servis"
-   - If OVERDUE: notify "Servis [vehicle] sudah lewat jadwal!"
+   - If DUE_SOON: notify "[vehicle] service is coming up — schedule it soon"
+   - If OVERDUE: notify "[vehicle] service is overdue!"
    - If ON_TRACK: no notification
 
 3. Schedule the worker in AutoBookApplication.kt on app start using:
@@ -464,8 +464,8 @@ Do all of the following:
 
 3. Consistent empty states — every list screen (Vehicle, Service, Fuel, Workshop) must have:
    - A centered icon (use a relevant Material icon, size 64dp, tinted with outline color)
-   - A headline text e.g. "Belum ada kendaraan"
-   - A subtext e.g. "Tap tombol + untuk menambahkan kendaraan pertama"
+   - A headline text e.g. "No vehicles yet"
+   - A subtext e.g. "Tap + to add your first vehicle"
 
 4. Loading states — wrap all StateFlow collections in a UiState<T> sealed class:
    sealed class UiState<out T> { object Loading; data class Success<T>(val data: T); data class Error(val message: String) }
@@ -474,7 +474,7 @@ Do all of the following:
 5. Confirm all strings are in strings.xml — scan all screen files for hardcoded Indonesian or English UI strings and move them to strings.xml if any remain.
 
 6. Snackbar feedback — after every successful insert/update/delete operation, show a Snackbar:
-   - "Kendaraan berhasil disimpan", "Servis berhasil dicatat", "Bengkel berhasil dihapus", etc.
+   - "Vehicle saved", "Service logged", "Workshop deleted", etc.
 ```
 
 **What to verify:**

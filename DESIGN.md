@@ -91,7 +91,7 @@ approach; fall back to Monospace if simpler.
 | Style name | Size / Weight | Usage |
 |---|---|---|
 | `displayNumber` | 28sp / SemiBold / tabular | hero numbers (monthly fuel total) |
-| `headlineLarge` | 24sp / Bold | screen titles ("Kendaraan", "Servis") |
+| `headlineLarge` | 24sp / Bold | screen titles ("Vehicles", "Service") |
 | `titleMedium` | 16sp / SemiBold | card titles (vehicle nickname) |
 | `numberMedium` | 16sp / SemiBold / tabular | odometer on cards, km/L values |
 | `bodyMedium` | 14sp / Regular | general body text |
@@ -145,9 +145,9 @@ dependency if missing.
 ### 4.3 `StatusBadge(status: ReminderStatus?)`
 Full-rounded pill, labelSmall, 4dp vertical / 10dp horizontal padding.
 - ON_TRACK: "On track" with statusSuccess colors
-- DUE_SOON: "Segera servis" with statusWarning colors
-- OVERDUE: "Lewat jadwal" with statusDanger colors
-- null (no reminder/service yet): "Belum ada servis" with statusWarning
+- DUE_SOON: "Service soon" with statusWarning colors
+- OVERDUE: "Overdue" with statusDanger colors
+- null (no reminder/service yet): "No service yet" with statusWarning
 
 ### 4.4 `SummaryCard`
 Two variants:
@@ -185,94 +185,93 @@ No character illustrations. Icon only.
 
 ### 4.9 `SectionHeader(title, actionLabel?, onAction?)`
 Row: title in titleMedium, optional trailing action text in labelMedium
-primary color ("Lihat semua").
+primary color ("See all").
 
 ---
 
 ## 5. Screen Specs
 
-### 5.1 Dashboard (Beranda)
+### 5.1 Dashboard (Home)
 Top to bottom:
 1. Header row (20dp top padding):
    - Left column: today's date in labelMedium textSecondary
-     ("Kamis, 11 Jun"), below it "Halo!" greeting in headlineLarge.
-     If user has vehicles, greeting stays generic "Halo!" (we store no
+     ("Thu, 11 Jun"), below it "Hello!" greeting in headlineLarge.
+     If user has vehicles, greeting stays generic "Hello!" (we store no
      user name).
    - Right: 40dp rounded-square (12dp radius) primaryContainer chip with
      bell icon (notification affordance, non-functional placeholder OK).
 2. Summary row (two cards, 10dp gap):
-   - SummaryCard.Filled: label "Bensin bulan ini", value = total fuel
+   - SummaryCard.Filled: label "Fuel this month", value = total fuel
      cost this month across ALL vehicles, formatted Rupiah.
-   - SummaryCard.Outlined: label "Servis berikutnya", value = nearest
-     upcoming reminder target across vehicles. Show "X km lagi" or a
-     date, or "Belum diset" if none.
-3. SectionHeader "Kendaraanku" + "Lihat semua" action navigating to
-   the Kendaraan tab.
+   - SummaryCard.Outlined: label "Next service", value = nearest
+     upcoming reminder target across vehicles. Show "X km left" or a
+     date, or "Not set" if none.
+3. SectionHeader "My Vehicles" + "See all" action navigating to
+   the Vehicles tab.
 4. Vehicle cards list. Each card (AutoBookCard) row layout:
    - VehicleIconChip (left)
    - Middle column: nickname titleMedium, "Brand Model · Year" in
      labelMedium textSecondary, odometer in numberMedium with "km" unit
      in labelSmall textSecondary
    - Right: StatusBadge
-5. Quick actions row: two TonalActionButtons, "Catat servis" (wrench
-   icon) and "Isi bensin" (gas station icon). If multiple vehicles,
+5. Quick actions row: two TonalActionButtons, "Log service" (wrench
+   icon) and "Log fuel" (gas station icon). If multiple vehicles,
    tapping opens the existing vehicle picker bottom sheet.
-6. Empty state (no vehicles): EmptyState with car icon, "Belum ada
-   kendaraan", "Tambahkan kendaraan pertamamu", plus a filled primary
-   button "Tambah Kendaraan".
+6. Empty state (no vehicles): EmptyState with car icon, "No vehicles",
+   "Add your first vehicle", plus a filled primary button "Add Vehicle".
 
-### 5.2 Kendaraan
-1. Screen title "Kendaraan" headlineLarge, 20dp padding.
+### 5.2 Vehicles
+1. Screen title "Vehicles" headlineLarge, 20dp padding.
 2. Vehicle cards, same card component as Dashboard but right side shows
    chevron-right icon in textTertiary instead of StatusBadge (status
    lives on Dashboard; this screen is about managing vehicles).
 3. AutoBookFab bottom-right for add.
 4. Empty state as per Dashboard.
 
-### 5.3 Servis
-1. Title "Servis".
+### 5.3 Service
+1. Title "Service".
 2. Vehicle filter chips row: full-rounded chips. Selected =
    primaryContainer bg + onPrimaryContainer text. Unselected =
    surfaceVariant bg + textSecondary text. Horizontal scroll if many.
 3. Active reminder card (if exists): AutoBookCard with a 3dp left accent
    handled as a Row containing a 3dp colored vertical bar (status color)
-   + content: "Servis berikutnya" labelMedium, target in numberMedium
+   + content: "Next service" labelMedium, target in numberMedium
    ("60.000 km" or date), StatusBadge on the right.
 4. History list. Each AutoBookCard:
    - Row 1: service date labelMedium textSecondary (left), cost in
      numberMedium (right)
    - Row 2: service types as small chips (surfaceVariant bg, labelSmall,
-     e.g. "Ganti Oli" "Tune-Up")
-   - Row 3: odometer "di 54.854 km" labelMedium textTertiary
-5. FAB. EmptyState: wrench icon, "Belum ada catatan servis",
-   "Tap tombol + untuk mencatat servis pertama".
+     e.g. "Oil Change" "Tune-Up")
+   - Row 3: odometer "at 54,854 km" labelMedium textTertiary
+5. FAB. EmptyState: wrench icon, "No service records",
+   "Tap + to log your first service".
 
-### 5.4 Bensin
-1. Title "Bensin". Filter chips as Servis.
+### 5.4 Fuel
+1. Title "Fuel". Filter chips as Service.
 2. Hero summary: SummaryCard.Filled full-width:
-   - "Total bulan ini" label, Rupiah value in displayNumber
-   - Below value: "Rata-rata 42,5 km/L" in labelMedium at 70% alpha
+   - "Total this month" label, Rupiah value in displayNumber
+   - Below value: "Average 42.5 km/L" in labelMedium at 70% alpha
      (omit the line if no data)
 3. Log list. Each AutoBookCard row:
    - Left: 40dp icon chip with gas-station icon, primaryContainer
    - Middle: fuel type + liters in titleMedium-sized line
-     ("Pertalite · 4,5 L"), date in labelMedium textSecondary
+     ("Pertalite · 4.5 L"), date in labelMedium textSecondary
    - Right column (end-aligned): total cost numberMedium, km/L below in
      labelSmall statusSuccess color (or "—" textTertiary for first
      entry)
 4. FAB. EmptyState: gas pump icon, existing copy.
 
-### 5.5 Bengkel
-1. Title "Bengkel".
+### 5.5 Workshops
+1. Title "Workshops".
 2. Search field: surfaceVariant background, radiusButton, search icon
-   leading, "Cari bengkel..." hint in textTertiary. No visible border
+   leading, "Search workshops..." hint in textTertiary. No visible border
    until focused (primary 2dp on focus).
 3. Workshop cards. Each AutoBookCard:
    - Row 1: name titleMedium (left), star rating right: filled stars in
      statusWarning amber, empty stars in outline color, 16dp
    - Row 2: address labelMedium textSecondary, maxLines 1 ellipsis
    - Row 3: specialization chips (surfaceVariant, labelSmall)
-   - Row 4: "Buka di Maps" as a text button with map-pin icon, primary
+   - Row 4: "Open in Maps" as a text button with map-pin icon, primary
      color, only if lat/lng present
 4. FAB. EmptyState: store icon, existing copy.
 
@@ -284,7 +283,7 @@ Shared form style:
   no visible outline when unfocused, 2dp primary outline focused,
   radiusButton corners, labels above the field in labelMedium
   textSecondary (not floating labels).
-- Selection chips (type Motor/Mobil, service types, fuel type,
+- Selection chips (type Motorcycle/Car, service types, fuel type,
   specialization): full-rounded, selected = primaryContainer +
   onPrimaryContainer, unselected = surfaceVariant + textSecondary.
 - Primary submit button: full-width, 52dp height, primary bg, onPrimary
