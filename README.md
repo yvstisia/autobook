@@ -4,8 +4,8 @@ A personal vehicle maintenance tracker for Android. Log service history,
 track fuel usage, and save your favorite workshops — all offline, no
 account required.
 
-Built for the Indonesian market (Bahasa Indonesia, Rupiah). Multi-language
-(ID/EN) and multi-currency support are planned — see the [Roadmap](#roadmap).
+Built for the Indonesian market first (Bahasa Indonesia, Rupiah), with
+English and multi-currency support built in. See the [Roadmap](#roadmap).
 
 ---
 
@@ -21,22 +21,23 @@ Built for the Indonesian market (Bahasa Indonesia, Rupiah). Multi-language
 - **Multi-vehicle** — track both motorcycles and cars in one place
 - **Service history** — log every service visit with date, odometer,
   cost, and service types
-- **Service reminders** — when logging a service, set a reminder by
-  distance (km), date, or both; a daily background check notifies you when
-  one is due soon or overdue. _(Automatic reminders by vehicle type are
-  planned — see Roadmap.)_
-- **Fuel log** — track every fill-up with auto-calculated km/L
-  efficiency
+- **Service reminders** — automatic reminders per service type (oil,
+  tune-up, battery) based on the vehicle type, plus manual reminders by
+  km, date, or both. Multiple active reminders per vehicle, surfaced on a
+  Service-tab carousel and an in-app notifications inbox; a daily
+  background check notifies you when one is due soon or overdue.
+- **Edit & delete** — full edit/delete for service and fuel records, with
+  confirmation dialogs and automatic km/L recalculation.
+- **Fuel log** — track every fill-up with auto-calculated km/L efficiency.
+  Service/fuel entries keep the vehicle odometer in sync automatically.
 - **Workshop bookmarks** — save favorite workshops with GPS tagging,
   personal rating, and one-tap Google Maps navigation
 - **Offline-first** — all data stored locally on device, no login or
   internet required
-- **Light & dark theme** — follows the system setting _(manual toggle
-  planned)_
-- **Indonesian UI** — all strings localized in Bahasa Indonesia _(English
-  planned)_
-- **Rupiah formatting** — amounts shown as `Rp` with dot thousands
-  separators _(multi-currency display planned)_
+- **Theme** — Light / Dark / System, switchable in Settings
+- **Multi-language** — Bahasa Indonesia and English, switchable in Settings
+- **Multi-currency** — record in any of 9 currencies (IDR, USD, EUR, GBP,
+  SGD, MYR, JPY, INR, AUD) with locale-aware number and date formatting
 
 ---
 
@@ -52,7 +53,8 @@ Built for the Indonesian market (Bahasa Indonesia, Rupiah). Multi-language
 | Navigation | Navigation Compose |
 | Background jobs | WorkManager |
 | Location | FusedLocationProvider |
-| Preferences | DataStore _(planned — not yet integrated)_ |
+| Preferences | Jetpack DataStore |
+| Localization | AppCompat per-app locales |
 | Build | Gradle (Kotlin DSL) + KSP |
 
 ---
@@ -65,15 +67,16 @@ app/src/main/java/com/autobook/app/
 │   ├── local/
 │   │   ├── entity/          # Room entities (Vehicle, ServiceRecord, etc.)
 │   │   ├── dao/             # Room DAOs
-│   │   └── AppDatabase.kt
+│   │   └── AppDatabase.kt   # Room DB + migrations
+│   ├── preferences/         # DataStore (name, theme, language, currency)
 │   └── repository/          # Repository classes
 ├── ui/
-│   ├── screen/              # Composable screens
+│   ├── screen/              # Composable screens (+ shared Service/Fuel forms)
 │   ├── component/           # Reusable UI components
 │   ├── viewmodel/           # ViewModels
 │   ├── navigation/          # Nav graph + routes
 │   └── theme/               # Colors, typography, shapes
-├── util/                    # FormatUtil, DateUtils, ReminderStatusUtil, etc.
+├── util/                    # AppFormatter, DateUtils, AutoReminderCalculator, etc.
 ├── worker/                  # ReminderCheckWorker (WorkManager)
 ├── AppContainer.kt          # Manual DI container
 ├── AutoBookApplication.kt
@@ -96,11 +99,10 @@ Five local Room tables:
 
 ---
 
-## Service Reminder Intervals (planned — Auto mode, Phase 1.5)
+## Service Reminder Intervals (Auto mode)
 
-> ⚠️ Not implemented yet. These are the intended defaults for the upcoming
-> Auto mode; the app currently only supports **manual** reminders set when
-> logging a service.
+Conservative Indonesian defaults baked into `AutoReminderCalculator`. Tune
+them in that one file without touching any other code.
 
 | Service type | Motorcycle | Car |
 |---|---|---|
@@ -149,14 +151,17 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`
 - Dark theme redesign
 - Offline-first with Room database
 
-### Phase 1.5 (in progress 🔧)
-- User settings (name, theme, language, currency)
-- Automatic service reminders per service type
-- Edit & delete for service and fuel records
-- Multi-language (ID + EN)
-- Multi-currency (display)
+### Phase 1.5 (done ✅)
+- First-run onboarding + Settings (name, theme, language, currency)
+- Light / Dark / System theme toggle
+- Multi-language (ID + EN) and multi-currency
+- Automatic + manual service reminders (multiple per vehicle)
+- In-app notifications inbox for due/overdue reminders
+- Edit & delete for service and fuel records, with km/L recalculation
+- Automatic odometer sync across screens
 
 ### Phase 2 (planned)
+- Interactive map picker for workshop location (pin/search)
 - Data backup & restore (export/import)
 - Community workshop ratings
 - Receipt photo capture
