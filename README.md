@@ -12,9 +12,12 @@ English and multi-currency support built in. See the [Roadmap](#roadmap).
 ## Screenshots
 
 <div align="center">
-  <img width="200" alt="AutoBook - Screenshot 1" src="https://github.com/user-attachments/assets/75cf43ce-63b5-4e55-8ecc-f4260cddff39" />
-  <img width="200" alt="AutoBook - Screenshot 2" src="https://github.com/user-attachments/assets/9a130b30-ec8d-49de-a423-4cafd76f92d6" />
-  <img width="200" alt="AutoBook - Screenshot 3" src="https://github.com/user-attachments/assets/8317706a-295a-40e5-ab51-797a31d1410c" />
+  <img width="100" alt="AutoBook v150 - Screenshot Home" src="https://github.com/user-attachments/assets/56858678-9337-4f87-87b5-249349639cc3" />
+  <img width="100" alt="AutoBook v150 - Screenshot Vehicles" src="https://github.com/user-attachments/assets/ec2775ca-5160-4d3c-8765-867e74513a5e" />
+  <img width="100" alt="AutoBook v150 - Screenshot Service" src="https://github.com/user-attachments/assets/4894a188-a52c-4a3f-a4b7-1d89fa01b24f" />
+  <img width="100" alt="AutoBook v150 - Screenshot Fuel" src="https://github.com/user-attachments/assets/7be7a4f2-eb49-47a8-8f1b-a9ca08e244d9" />
+  <img width="100" alt="AutoBook v150 - Screenshot Workshops" src="https://github.com/user-attachments/assets/46e97a47-bdf8-4e43-af73-e99f91741813" />
+
 </div>
 
 
