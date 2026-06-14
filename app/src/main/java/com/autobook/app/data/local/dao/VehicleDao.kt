@@ -26,4 +26,11 @@ interface VehicleDao {
 
     @Query("SELECT * FROM vehicle WHERE id = :id")
     suspend fun getVehicleById(id: Int): Vehicle?
+
+    /**
+     * Raises a vehicle's odometer to [odometer] if it is higher than the stored value, so the
+     * latest service/fuel entry keeps the vehicle's current odometer in sync. Never lowers it.
+     */
+    @Query("UPDATE vehicle SET currentOdometer = :odometer WHERE id = :vehicleId AND currentOdometer < :odometer")
+    suspend fun bumpOdometerIfHigher(vehicleId: Int, odometer: Int)
 }

@@ -42,6 +42,10 @@
     <string name="service_empty_title">No service records yet</string>
     <string name="service_empty_subtitle">Tap the + button to log your first service</string>
     <string name="add_service_title">Log Service</string>
+    <string name="edit_service_title">Edit Service</string>
+    <string name="service_deleted">Service deleted</string>
+    <string name="delete_service_title">Delete Service?</string>
+    <string name="delete_service_message">This service record will be deleted.</string>
     <string name="field_service_date">Service Date</string>
     <string name="field_service_types">Service Types</string>
     <string name="field_cost">Cost</string>
@@ -53,6 +57,11 @@
     <string name="service_type_aki">Battery Change</string>
     <string name="service_type_lainnya">Other</string>
     <string name="reminder_set">Set Reminder</string>
+    <string name="reminder_mode">Reminder</string>
+    <string name="reminder_mode_auto">Automatic</string>
+    <string name="reminder_mode_manual">Manual</string>
+    <string name="reminder_mode_off">Off</string>
+    <string name="reminder_auto_hint">Reminders are created automatically based on service type and vehicle type.</string>
     <string name="reminder_remind_by">Remind By</string>
     <string name="remind_by_km">Distance</string>
     <string name="remind_by_date">Date</string>
@@ -60,6 +69,8 @@
     <string name="field_next_km">Next Target Odometer (km)</string>
     <string name="field_next_date">Next Service Date</string>
     <string name="service_saved">Service logged</string>
+    <string name="reminder_section_title">Service Reminders</string>
+    <string name="reminder_empty">No service reminders yet</string>
     <string name="status_on_track">On track</string>
     <string name="status_due_soon">Service soon</string>
     <string name="status_overdue">Overdue</string>
@@ -72,6 +83,10 @@
     <string name="fuel_empty_title">No fuel records yet</string>
     <string name="fuel_empty_subtitle">Tap the + button to log a fill-up</string>
     <string name="add_fuel_title">Add Fuel</string>
+    <string name="edit_fuel_title">Edit Fuel</string>
+    <string name="fuel_deleted">Fuel log deleted</string>
+    <string name="delete_fuel_title">Delete Fuel?</string>
+    <string name="delete_fuel_message">This fuel log will be deleted.</string>
     <string name="field_liters">Liters</string>
     <string name="field_price_per_liter">Price per Liter</string>
     <string name="field_total_cost">Total Cost</string>

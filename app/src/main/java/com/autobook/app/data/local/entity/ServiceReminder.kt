@@ -1,5 +1,6 @@
 package com.autobook.app.data.local.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -34,6 +35,16 @@ data class ServiceReminder(
     val serviceRecordId: Int,
     /** denormalized from ServiceRecord for quick query */
     val vehicleId: Int,
+    /**
+     * Which service type this reminder is for (e.g. "oli", "tune_up", "aki"). A single
+     * ServiceRecord can have multiple reminders, one per predictable type. Empty string
+     * for legacy/manual reminders that aren't tied to a specific type.
+     *
+     * defaultValue must match the v1->v2 migration's `DEFAULT ''` so Room's schema
+     * validation passes on both fresh installs and upgrades.
+     */
+    @ColumnInfo(defaultValue = "")
+    val serviceType: String = "",
     /** "km", "date", or "both" */
     val remindBy: String,
     /** nullable target odometer */

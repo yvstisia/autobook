@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.autobook.app.data.local.entity.FuelLog
 import com.autobook.app.data.repository.FuelRepository
+import com.autobook.app.data.repository.VehicleRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class FuelViewModel(private val repository: FuelRepository) : ViewModel() {
+class FuelViewModel(
+    private val repository: FuelRepository,
+    private val vehicleRepository: VehicleRepository
+) : ViewModel() {
 
     private val _selectedVehicleId = MutableStateFlow<Int?>(null)
     val selectedVehicleId: StateFlow<Int?> = _selectedVehicleId.asStateFlow()
@@ -54,7 +58,43 @@ class FuelViewModel(private val repository: FuelRepository) : ViewModel() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 repository.insertFuelLog(vehicleId, fillDate, liters, pricePerLiter, odometerAtFill, fuelType)
+                vehicleRepository.bumpOdometerIfHigher(vehicleId, odometerAtFill)
             }
+            onDone()
+        }
+    }
+
+    /** Loads a single fuel log for the edit screen. */
+    fun loadFuelLog(id: Int, onResult: (FuelLog?) -> Unit) {
+        viewModelScope.launch {
+            val log = withContext(Dispatchers.IO) { repository.getFuelLogById(id) }
+            onResult(log)
+        }
+    }
+
+    /** Updates a fuel log; totalCost and km/L (this entry + dependents) are recomputed. */
+    fun updateFuelLog(
+        id: Int,
+        vehicleId: Int,
+        fillDate: Long,
+        liters: Float,
+        pricePerLiter: Int,
+        odometerAtFill: Int,
+        fuelType: String,
+        onDone: () -> Unit = {}
+    ) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.updateFuelLog(id, vehicleId, fillDate, liters, pricePerLiter, odometerAtFill, fuelType)
+                vehicleRepository.bumpOdometerIfHigher(vehicleId, odometerAtFill)
+            }
+            onDone()
+        }
+    }
+
+    fun deleteFuelLog(log: FuelLog, onDone: () -> Unit = {}) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { repository.deleteFuelLog(log) }
             onDone()
         }
     }

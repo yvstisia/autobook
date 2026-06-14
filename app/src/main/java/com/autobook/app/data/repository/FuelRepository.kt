@@ -17,7 +17,66 @@ class FuelRepository(private val fuelLogDao: FuelLogDao) {
     suspend fun getLastFuelLog(vehicleId: Int): FuelLog? =
         fuelLogDao.getLastFuelLog(vehicleId)
 
-    suspend fun deleteFuelLog(log: FuelLog) = fuelLogDao.deleteFuelLog(log)
+    suspend fun getFuelLogById(id: Int): FuelLog? =
+        fuelLogDao.getFuelLogById(id)
+
+    /** Deletes a log and recomputes km/L for the vehicle (the next fill depended on it). */
+    suspend fun deleteFuelLog(log: FuelLog) {
+        fuelLogDao.deleteFuelLog(log)
+        recalculateKmPerLiter(log.vehicleId)
+    }
+
+    /**
+     * Updates a fuel log's editable fields, recomputes totalCost, then recomputes km/L for
+     * the whole vehicle so this entry and the next dependent entry stay correct.
+     */
+    suspend fun updateFuelLog(
+        id: Int,
+        vehicleId: Int,
+        fillDate: Long,
+        liters: Float,
+        pricePerLiter: Int,
+        odometerAtFill: Int,
+        fuelType: String
+    ) {
+        val totalCost = (liters * pricePerLiter).roundToInt()
+        fuelLogDao.updateFuelLog(
+            FuelLog(
+                id = id,
+                vehicleId = vehicleId,
+                fillDate = fillDate,
+                liters = liters,
+                pricePerLiter = pricePerLiter,
+                totalCost = totalCost,
+                odometerAtFill = odometerAtFill,
+                fuelType = fuelType,
+                kmPerLiter = 0.0f // set by recalculateKmPerLiter below
+            )
+        )
+        recalculateKmPerLiter(vehicleId)
+    }
+
+    /**
+     * Recomputes kmPerLiter for every fill of a vehicle, in odometer order. Each entry's
+     * value = (its odometer - previous entry's odometer) / its liters; the first is 0.
+     */
+    private suspend fun recalculateKmPerLiter(vehicleId: Int) {
+        val ordered = fuelLogDao.getFuelLogsByVehicleOrdered(vehicleId)
+        var previousOdometer: Int? = null
+        for (log in ordered) {
+            val prev = previousOdometer
+            val kmpl = if (prev != null && log.liters > 0f) {
+                val distance = log.odometerAtFill - prev
+                if (distance > 0) distance / log.liters else 0.0f
+            } else {
+                0.0f
+            }
+            if (kmpl != log.kmPerLiter) {
+                fuelLogDao.updateFuelLog(log.copy(kmPerLiter = kmpl))
+            }
+            previousOdometer = log.odometerAtFill
+        }
+    }
 
     /**
      * Inserts a fuel log, auto-calculating [FuelLog.totalCost] and [FuelLog.kmPerLiter].

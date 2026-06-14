@@ -66,6 +66,20 @@ class AppFormatter(
         return (major * currency.minorUnitFactor).roundToInt()
     }
 
+    /**
+     * Stored minor units -> a plain editable major-unit string (no grouping, '.' decimal),
+     * used to pre-fill money input fields on edit screens. 4550 USD -> "45.50"; 350000 IDR
+     * -> "350000". Returns "" for zero so the field shows as empty/optional.
+     */
+    fun editableAmount(minorUnits: Int): String {
+        if (minorUnits == 0) return ""
+        if (currency.decimalPlaces == 0) return minorUnits.toString()
+        val factor = currency.minorUnitFactor
+        val whole = minorUnits / factor
+        val frac = (minorUnits % factor).toString().padStart(currency.decimalPlaces, '0')
+        return "$whole.$frac"
+    }
+
     companion object {
         /**
          * Normalize locale-flavored numeric input to a plain parseable form. The last '.' or ','

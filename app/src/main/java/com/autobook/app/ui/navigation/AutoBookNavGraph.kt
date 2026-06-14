@@ -17,6 +17,8 @@ import com.autobook.app.ui.screen.AddServiceScreen
 import com.autobook.app.ui.screen.AddVehicleScreen
 import com.autobook.app.ui.screen.AddWorkshopScreen
 import com.autobook.app.ui.screen.DashboardScreen
+import com.autobook.app.ui.screen.EditFuelScreen
+import com.autobook.app.ui.screen.EditServiceScreen
 import com.autobook.app.ui.screen.EditVehicleScreen
 import com.autobook.app.ui.screen.EditWorkshopScreen
 import com.autobook.app.ui.screen.FuelListScreen
@@ -140,11 +142,26 @@ fun AutoBookNavGraph(
 
         // --- Services ---
         composable(Screen.ServiceList.route) {
-            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository))
+            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository))
             ServiceListScreen(
                 viewModel = vm,
                 vehicles = vehicles,
-                onAddService = { navController.navigate(Screen.AddService.createRoute(it)) }
+                onAddService = { navController.navigate(Screen.AddService.createRoute(it)) },
+                onEditService = { navController.navigate(Screen.EditService.createRoute(it)) }
+            )
+        }
+        composable(
+            route = Screen.EditService.route,
+            arguments = listOf(navArgument(Screen.EditService.ARG_RECORD_ID) { type = NavType.IntType })
+        ) { entry ->
+            val recordId = entry.arguments?.getInt(Screen.EditService.ARG_RECORD_ID) ?: return@composable
+            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository))
+            EditServiceScreen(
+                viewModel = vm,
+                recordId = recordId,
+                vehicles = vehicles,
+                onBack = { navController.popBackStack() },
+                onShowMessage = onShowMessage
             )
         }
         composable(
@@ -152,11 +169,13 @@ fun AutoBookNavGraph(
             arguments = listOf(navArgument(Screen.AddService.ARG_VEHICLE_ID) { type = NavType.IntType })
         ) { entry ->
             val id = entry.arguments?.getInt(Screen.AddService.ARG_VEHICLE_ID) ?: return@composable
-            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository))
+            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository))
+            val serviceVehicle = vehicles.firstOrNull { it.id == id }
             AddServiceScreen(
                 viewModel = vm,
                 vehicleId = id,
-                vehicleName = vehicles.firstOrNull { it.id == id }?.nickname ?: "",
+                vehicleName = serviceVehicle?.nickname ?: "",
+                vehicleType = serviceVehicle?.type ?: "motor",
                 onBack = { navController.popBackStack() },
                 onShowMessage = onShowMessage
             )
@@ -164,11 +183,26 @@ fun AutoBookNavGraph(
 
         // --- Fuel ---
         composable(Screen.FuelList.route) {
-            val vm: FuelViewModel = viewModel(factory = FuelViewModelFactory(container.fuelRepository))
+            val vm: FuelViewModel = viewModel(factory = FuelViewModelFactory(container.fuelRepository, container.vehicleRepository))
             FuelListScreen(
                 viewModel = vm,
                 vehicles = vehicles,
-                onAddFuel = { navController.navigate(Screen.AddFuel.createRoute(it)) }
+                onAddFuel = { navController.navigate(Screen.AddFuel.createRoute(it)) },
+                onEditFuel = { navController.navigate(Screen.EditFuel.createRoute(it)) }
+            )
+        }
+        composable(
+            route = Screen.EditFuel.route,
+            arguments = listOf(navArgument(Screen.EditFuel.ARG_LOG_ID) { type = NavType.IntType })
+        ) { entry ->
+            val logId = entry.arguments?.getInt(Screen.EditFuel.ARG_LOG_ID) ?: return@composable
+            val vm: FuelViewModel = viewModel(factory = FuelViewModelFactory(container.fuelRepository, container.vehicleRepository))
+            EditFuelScreen(
+                viewModel = vm,
+                logId = logId,
+                vehicles = vehicles,
+                onBack = { navController.popBackStack() },
+                onShowMessage = onShowMessage
             )
         }
         composable(
@@ -176,7 +210,7 @@ fun AutoBookNavGraph(
             arguments = listOf(navArgument(Screen.AddFuel.ARG_VEHICLE_ID) { type = NavType.IntType })
         ) { entry ->
             val id = entry.arguments?.getInt(Screen.AddFuel.ARG_VEHICLE_ID) ?: return@composable
-            val vm: FuelViewModel = viewModel(factory = FuelViewModelFactory(container.fuelRepository))
+            val vm: FuelViewModel = viewModel(factory = FuelViewModelFactory(container.fuelRepository, container.vehicleRepository))
             AddFuelScreen(
                 viewModel = vm,
                 vehicleId = id,

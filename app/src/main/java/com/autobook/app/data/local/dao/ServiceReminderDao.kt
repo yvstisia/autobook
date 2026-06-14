@@ -17,9 +17,9 @@ interface ServiceReminderDao {
     @Update
     suspend fun updateReminder(reminder: ServiceReminder)
 
-    /** Most recent active (isDone = 0) reminder for a vehicle. */
-    @Query("SELECT * FROM service_reminder WHERE vehicleId = :vehicleId AND isDone = 0 ORDER BY id DESC LIMIT 1")
-    fun getActiveReminderByVehicle(vehicleId: Int): Flow<ServiceReminder?>
+    /** All active (isDone = 0) reminders for a vehicle — one per service type. */
+    @Query("SELECT * FROM service_reminder WHERE vehicleId = :vehicleId AND isDone = 0 ORDER BY id DESC")
+    fun getActiveRemindersByVehicle(vehicleId: Int): Flow<List<ServiceReminder>>
 
     /** All active reminders across all vehicles — used by the background worker. */
     @Query("SELECT * FROM service_reminder WHERE isDone = 0")
@@ -28,10 +28,15 @@ interface ServiceReminderDao {
     @Query("UPDATE service_reminder SET isDone = 1 WHERE id = :reminderId")
     suspend fun markReminderDone(reminderId: Int)
 
+    /** Removes all reminders attached to a record, used when regenerating after an edit. */
+    @Query("DELETE FROM service_reminder WHERE serviceRecordId = :serviceRecordId")
+    suspend fun deleteRemindersForRecord(serviceRecordId: Int)
+
     /**
-     * Fulfills all active reminders for a vehicle. Called when a new service is
-     * recorded, so stale reminders stop triggering daily worker notifications.
+     * Fulfills active reminders for a vehicle that match a specific service type. Called when
+     * a service of that type is logged, so the old reminder is replaced by the new one — while
+     * reminders for *other* types (and unrelated logs like a tire change) stay untouched.
      */
-    @Query("UPDATE service_reminder SET isDone = 1 WHERE vehicleId = :vehicleId AND isDone = 0")
-    suspend fun markAllRemindersDoneForVehicle(vehicleId: Int)
+    @Query("UPDATE service_reminder SET isDone = 1 WHERE vehicleId = :vehicleId AND serviceType = :serviceType AND isDone = 0")
+    suspend fun markRemindersDoneForType(vehicleId: Int, serviceType: String)
 }

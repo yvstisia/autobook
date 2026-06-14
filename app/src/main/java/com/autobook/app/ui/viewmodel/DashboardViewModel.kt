@@ -2,6 +2,7 @@ package com.autobook.app.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.autobook.app.data.local.entity.ServiceReminder
 import com.autobook.app.data.local.entity.Vehicle
 import com.autobook.app.data.repository.FuelRepository
 import com.autobook.app.data.repository.ServiceRepository
@@ -26,8 +27,8 @@ data class DashboardVehicleCard(
     val kmSinceLastService: Int?,
     /** null when there is no active reminder. */
     val reminderStatus: ReminderStatus?,
-    /** the active reminder itself; targets feed the "Servis berikutnya" summary. */
-    val reminder: com.autobook.app.data.local.entity.ServiceReminder?,
+    /** the most-urgent active reminder; its target feeds the "Servis berikutnya" summary. */
+    val reminder: ServiceReminder?,
     val fuelCostThisMonth: Int
 )
 
@@ -54,20 +55,40 @@ class DashboardViewModel(
 
     private fun vehicleCardFlow(vehicle: Vehicle) = combine(
         serviceRepository.getServiceRecordsByVehicle(vehicle.id),
-        serviceRepository.getActiveReminderByVehicle(vehicle.id),
+        serviceRepository.getActiveRemindersByVehicle(vehicle.id),
         fuelRepository.getTotalFuelCostThisMonth(vehicle.id)
-    ) { services, reminder, fuelCost ->
+    ) { services, reminders, fuelCost ->
         val latest = services.firstOrNull()
         val kmSince = latest?.let { vehicle.currentOdometer - it.odometerAtService }
-        val status = reminder?.let {
-            computeReminderStatus(vehicle.currentOdometer, it.nextKm, it.nextDate)
-        }
+        val mostUrgent = mostUrgentReminder(reminders, vehicle.currentOdometer)
         DashboardVehicleCard(
             vehicle = vehicle,
             kmSinceLastService = kmSince,
-            reminderStatus = status,
-            reminder = reminder,
+            reminderStatus = mostUrgent?.second,
+            reminder = mostUrgent?.first,
             fuelCostThisMonth = fuelCost
         )
+    }
+
+    /**
+     * Picks the single reminder to surface on the vehicle card: worst status first
+     * (overdue > due soon > on track), then the soonest target.
+     */
+    private fun mostUrgentReminder(
+        reminders: List<ServiceReminder>,
+        currentOdometer: Int
+    ): Pair<ServiceReminder, ReminderStatus>? =
+        reminders
+            .map { it to computeReminderStatus(currentOdometer, it.nextKm, it.nextDate) }
+            .minWithOrNull(
+                compareBy<Pair<ServiceReminder, ReminderStatus>> { severityRank(it.second) }
+                    .thenBy { it.first.nextDate ?: Long.MAX_VALUE }
+                    .thenBy { it.first.nextKm ?: Int.MAX_VALUE }
+            )
+
+    private fun severityRank(status: ReminderStatus): Int = when (status) {
+        ReminderStatus.OVERDUE -> 0
+        ReminderStatus.DUE_SOON -> 1
+        ReminderStatus.ON_TRACK -> 2
     }
 }

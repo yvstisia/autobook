@@ -47,7 +47,8 @@ import com.autobook.app.util.LocalAppFormatter
 fun FuelListScreen(
     viewModel: FuelViewModel,
     vehicles: List<Vehicle>,
-    onAddFuel: (Int) -> Unit
+    onAddFuel: (Int) -> Unit,
+    onEditFuel: (Int) -> Unit
 ) {
     val selectedId by viewModel.selectedVehicleId.collectAsStateWithLifecycle()
     val logs by viewModel.fuelLogs.collectAsStateWithLifecycle()
@@ -119,7 +120,11 @@ fun FuelListScreen(
                         ) {
                             item { MonthlySummaryCard(monthlyTotal, avgKmpl) }
                             items(logs, key = { it.id }) { log ->
-                                FuelCard(log = log, modifier = Modifier.padding(bottom = CardGap))
+                                FuelCard(
+                                    log = log,
+                                    onClick = { onEditFuel(log.id) },
+                                    modifier = Modifier.padding(bottom = CardGap)
+                                )
                             }
                         }
                     }
@@ -143,10 +148,10 @@ private fun MonthlySummaryCard(monthlyTotal: Int, avgKmpl: Float) {
 }
 
 @Composable
-private fun FuelCard(log: FuelLog, modifier: Modifier = Modifier) {
+private fun FuelCard(log: FuelLog, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val colors = autoBookColors
     val fmt = LocalAppFormatter.current
-    AutoBookCard(modifier = modifier) {
+    AutoBookCard(modifier = modifier, onClick = onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier

@@ -15,4 +15,8 @@ class VehicleRepository(private val vehicleDao: VehicleDao) {
     suspend fun updateVehicle(vehicle: Vehicle) = vehicleDao.updateVehicle(vehicle)
 
     suspend fun deleteVehicle(vehicle: Vehicle) = vehicleDao.deleteVehicle(vehicle)
+
+    /** Raises the vehicle's odometer to [odometer] when higher; keeps all screens in sync. */
+    suspend fun bumpOdometerIfHigher(vehicleId: Int, odometer: Int) =
+        vehicleDao.bumpOdometerIfHigher(vehicleId, odometer)
 }

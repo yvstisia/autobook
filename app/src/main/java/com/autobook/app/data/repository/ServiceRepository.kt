@@ -18,8 +18,14 @@ class ServiceRepository(
     suspend fun insertServiceRecord(record: ServiceRecord): Long =
         serviceRecordDao.insertServiceRecord(record)
 
+    suspend fun updateServiceRecord(record: ServiceRecord) =
+        serviceRecordDao.updateServiceRecord(record)
+
     suspend fun deleteServiceRecord(record: ServiceRecord) =
         serviceRecordDao.deleteServiceRecord(record)
+
+    suspend fun getServiceRecordById(id: Int): ServiceRecord? =
+        serviceRecordDao.getServiceRecordById(id)
 
     suspend fun getLatestServiceRecord(vehicleId: Int): ServiceRecord? =
         serviceRecordDao.getLatestServiceRecord(vehicleId)
@@ -31,11 +37,14 @@ class ServiceRepository(
     suspend fun markReminderDone(reminderId: Int) =
         serviceReminderDao.markReminderDone(reminderId)
 
-    suspend fun markAllRemindersDoneForVehicle(vehicleId: Int) =
-        serviceReminderDao.markAllRemindersDoneForVehicle(vehicleId)
+    suspend fun markRemindersDoneForType(vehicleId: Int, serviceType: String) =
+        serviceReminderDao.markRemindersDoneForType(vehicleId, serviceType)
 
-    fun getActiveReminderByVehicle(vehicleId: Int): Flow<ServiceReminder?> =
-        serviceReminderDao.getActiveReminderByVehicle(vehicleId)
+    suspend fun deleteRemindersForRecord(serviceRecordId: Int) =
+        serviceReminderDao.deleteRemindersForRecord(serviceRecordId)
+
+    fun getActiveRemindersByVehicle(vehicleId: Int): Flow<List<ServiceReminder>> =
+        serviceReminderDao.getActiveRemindersByVehicle(vehicleId)
 
     suspend fun getAllActiveReminders(): List<ServiceReminder> =
         serviceReminderDao.getAllActiveReminders()

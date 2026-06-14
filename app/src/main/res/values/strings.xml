@@ -42,6 +42,10 @@
     <string name="service_empty_title">Belum ada catatan servis</string>
     <string name="service_empty_subtitle">Tap tombol + untuk mencatat servis pertama</string>
     <string name="add_service_title">Catat Servis</string>
+    <string name="edit_service_title">Edit Servis</string>
+    <string name="service_deleted">Servis berhasil dihapus</string>
+    <string name="delete_service_title">Hapus Servis?</string>
+    <string name="delete_service_message">Catatan servis ini akan dihapus.</string>
     <string name="field_service_date">Tanggal Servis</string>
     <string name="field_service_types">Jenis Servis</string>
     <string name="field_cost">Biaya</string>
@@ -53,6 +57,11 @@
     <string name="service_type_aki">Ganti Aki</string>
     <string name="service_type_lainnya">Lainnya</string>
     <string name="reminder_set">Set Pengingat</string>
+    <string name="reminder_mode">Pengingat</string>
+    <string name="reminder_mode_auto">Otomatis</string>
+    <string name="reminder_mode_manual">Manual</string>
+    <string name="reminder_mode_off">Nonaktif</string>
+    <string name="reminder_auto_hint">Pengingat dibuat otomatis berdasarkan jenis servis &amp; tipe kendaraan.</string>
     <string name="reminder_remind_by">Ingatkan Berdasarkan</string>
     <string name="remind_by_km">Jarak</string>
     <string name="remind_by_date">Tanggal</string>
@@ -60,6 +69,8 @@
     <string name="field_next_km">Target Odometer Berikutnya (km)</string>
     <string name="field_next_date">Tanggal Servis Berikutnya</string>
     <string name="service_saved">Servis berhasil dicatat</string>
+    <string name="reminder_section_title">Pengingat Servis</string>
+    <string name="reminder_empty">Belum ada pengingat servis</string>
     <string name="status_on_track">On track</string>
     <string name="status_due_soon">Segera servis</string>
     <string name="status_overdue">Lewat jadwal</string>
@@ -72,6 +83,10 @@
     <string name="fuel_empty_title">Belum ada catatan bensin</string>
     <string name="fuel_empty_subtitle">Tap tombol + untuk mencatat pengisian bensin</string>
     <string name="add_fuel_title">Isi Bensin</string>
+    <string name="edit_fuel_title">Edit Bensin</string>
+    <string name="fuel_deleted">Bensin berhasil dihapus</string>
+    <string name="delete_fuel_title">Hapus Bensin?</string>
+    <string name="delete_fuel_message">Catatan pengisian ini akan dihapus.</string>
     <string name="field_liters">Liter</string>
     <string name="field_price_per_liter">Harga per Liter</string>
     <string name="field_total_cost">Total Biaya</string>

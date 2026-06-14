@@ -35,6 +35,16 @@ sealed class Screen(val route: String) {
         fun createRoute(vehicleId: Int) = "add_fuel/$vehicleId"
     }
 
+    // Service / Fuel edit screens (by record id)
+    data object EditService : Screen("edit_service/{recordId}") {
+        const val ARG_RECORD_ID = "recordId"
+        fun createRoute(recordId: Int) = "edit_service/$recordId"
+    }
+    data object EditFuel : Screen("edit_fuel/{logId}") {
+        const val ARG_LOG_ID = "logId"
+        fun createRoute(logId: Int) = "edit_fuel/$logId"
+    }
+
     // Workshop sub-screens
     data object AddWorkshop : Screen("add_workshop")
     data object EditWorkshop : Screen("edit_workshop/{workshopId}") {
