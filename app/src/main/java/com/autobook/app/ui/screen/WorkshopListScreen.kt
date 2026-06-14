@@ -112,10 +112,11 @@ fun WorkshopListScreen(
                             bottom = BottomNavContentPadding
                         )
                     ) {
-                        items(workshops, key = { it.id }) { workshop ->
+                        items(workshops, key = { it.workshop.id }) { item ->
                             WorkshopCard(
-                                workshop = workshop,
-                                onClick = { onWorkshopClick(workshop.id) },
+                                workshop = item.workshop,
+                                visits = item.visits,
+                                onClick = { onWorkshopClick(item.workshop.id) },
                                 modifier = Modifier.padding(bottom = CardGap)
                             )
                         }
@@ -131,7 +132,12 @@ private val specializationLabels = specializationOptions.associate { it.code to 
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun WorkshopCard(workshop: Workshop, onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun WorkshopCard(
+    workshop: Workshop,
+    visits: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     val colors = autoBookColors
     val codes = workshop.specialization.split(",").map { it.trim() }.filter { it.isNotEmpty() }
@@ -140,7 +146,7 @@ private fun WorkshopCard(workshop: Workshop, onClick: () -> Unit, modifier: Modi
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Text(
                 text = workshop.name,
@@ -150,7 +156,17 @@ private fun WorkshopCard(workshop: Workshop, onClick: () -> Unit, modifier: Modi
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            StarRating(rating = workshop.rating)
+            Column(horizontalAlignment = Alignment.End) {
+                StarRating(rating = workshop.rating)
+                if (visits > 0) {
+                    Text(
+                        text = stringResource(R.string.workshop_visits, visits),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = colors.textTertiary,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+            }
         }
         workshop.address?.takeIf { it.isNotBlank() }?.let {
             Text(

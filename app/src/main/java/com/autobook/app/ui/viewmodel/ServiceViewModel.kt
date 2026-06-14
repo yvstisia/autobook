@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.autobook.app.data.local.entity.ServiceRecord
 import com.autobook.app.data.local.entity.ServiceReminder
+import com.autobook.app.data.local.entity.Workshop
 import com.autobook.app.data.repository.ServiceRepository
 import com.autobook.app.data.repository.VehicleRepository
+import com.autobook.app.data.repository.WorkshopRepository
 import com.autobook.app.util.AutoReminderCalculator
 import com.autobook.app.util.splitCodes
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,7 +26,8 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalCoroutinesApi::class)
 class ServiceViewModel(
     private val repository: ServiceRepository,
-    private val vehicleRepository: VehicleRepository
+    private val vehicleRepository: VehicleRepository,
+    private val workshopRepository: WorkshopRepository
 ) : ViewModel() {
 
     private val _selectedVehicleId = MutableStateFlow<Int?>(null)
@@ -38,6 +42,12 @@ class ServiceViewModel(
         _selectedVehicleId.flatMapLatest { id ->
             if (id == null) flowOf(emptyList()) else repository.getActiveRemindersByVehicle(id)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    /** Existing workshop names, used to suggest while typing the workshop in the service form. */
+    val workshopNames: StateFlow<List<String>> =
+        workshopRepository.getAllWorkshops()
+            .map { list -> list.map { it.name } }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun setSelectedVehicle(id: Int) {
         _selectedVehicleId.value = id
@@ -80,6 +90,7 @@ class ServiceViewModel(
                     )
                 }
                 vehicleRepository.bumpOdometerIfHigher(record.vehicleId, record.odometerAtService)
+                syncWorkshop(record.workshopName)
             }
             onDone()
         }
@@ -112,6 +123,7 @@ class ServiceViewModel(
                     )
                 }
                 vehicleRepository.bumpOdometerIfHigher(record.vehicleId, record.odometerAtService)
+                syncWorkshop(record.workshopName)
             }
             onDone()
         }
@@ -122,6 +134,20 @@ class ServiceViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) { repository.deleteServiceRecord(record) }
             onDone()
+        }
+    }
+
+    /**
+     * Ensures a workshop with [name] exists in the Workshop list (case-insensitive), creating
+     * it once if needed. Visit counts are derived from service records, so no counter to bump.
+     */
+    private suspend fun syncWorkshop(name: String?) {
+        val trimmed = name?.trim()
+        if (trimmed.isNullOrBlank()) return
+        if (workshopRepository.findWorkshopByName(trimmed) == null) {
+            workshopRepository.insertWorkshop(
+                Workshop(name = trimmed, rating = 0, specialization = "")
+            )
         }
     }
 }

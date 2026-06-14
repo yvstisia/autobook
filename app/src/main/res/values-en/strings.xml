@@ -50,6 +50,8 @@
     <string name="field_service_date">Service Date</string>
     <string name="field_service_types">Service Types</string>
     <string name="field_cost">Cost</string>
+    <string name="field_workshop">Workshop</string>
+    <string name="workshop_placeholder">Workshop name (optional)</string>
     <string name="field_notes">Notes</string>
     <string name="service_type_oli">Oil Change</string>
     <string name="service_type_tune_up">Tune-Up</string>
@@ -92,6 +94,7 @@
     <string name="field_price_per_liter">Price per Liter</string>
     <string name="field_total_cost">Total Cost</string>
     <string name="field_fuel_type">Fuel Type</string>
+    <string name="fuel_type_placeholder">e.g. Pertalite, Shell V-Power</string>
     <string name="monthly_avg_kmpl">Average %1$s</string>
     <string name="fuel_saved">Fuel logged</string>
 
@@ -120,6 +123,7 @@
     <string name="delete_workshop_title">Delete Workshop?</string>
     <string name="delete_workshop_message">This workshop will be removed from your saved list.</string>
     <string name="rating_star">%1$d stars</string>
+    <string name="workshop_visits">%1$dx visited</string>
 
     <!-- Dashboard -->
     <string name="dashboard_greeting">Hello!</string>

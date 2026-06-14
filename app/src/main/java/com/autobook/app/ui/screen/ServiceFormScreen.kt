@@ -55,6 +55,7 @@ fun ServiceFormScreen(
     vehicleType: String,
     vehicleCurrentOdometer: Int,
     initial: ServiceRecord?,
+    workshopSuggestions: List<String> = emptyList(),
     onSubmit: (ServiceRecord, List<ServiceReminder>) -> Unit,
     onBack: () -> Unit,
     onDelete: (() -> Unit)? = null
@@ -67,6 +68,7 @@ fun ServiceFormScreen(
         mutableStateListOf<String>().apply { initial?.let { addAll(splitCodes(it.serviceTypes)) } }
     }
     var cost by remember { mutableStateOf(initial?.let { fmt.editableAmount(it.cost) } ?: "") }
+    var workshopName by remember { mutableStateOf(initial?.workshopName ?: "") }
     var notes by remember { mutableStateOf(initial?.notes ?: "") }
 
     var reminderMode by remember { mutableStateOf(ReminderMode.AUTO) }
@@ -101,7 +103,8 @@ fun ServiceFormScreen(
                     odometerAtService = odometer.toInt(),
                     serviceTypes = joinCodes(selectedTypes),
                     cost = fmt.parseMoneyToMinorUnits(cost) ?: 0,
-                    notes = notes.takeIf { it.isNotBlank() }
+                    notes = notes.takeIf { it.isNotBlank() },
+                    workshopName = workshopName.takeIf { it.isNotBlank() }?.trim()
                 )
                 val reminders = if (!reminderAvailable) emptyList() else when (reminderMode) {
                     ReminderMode.AUTO -> AutoReminderCalculator.generate(
@@ -200,6 +203,36 @@ fun ServiceFormScreen(
             onValueChange = { input -> cost = input.filter { it.isDigit() || it == '.' || it == ',' } },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
+
+        Column {
+            FormTextField(
+                label = stringResource(R.string.field_workshop),
+                value = workshopName,
+                onValueChange = { workshopName = it },
+                placeholder = stringResource(R.string.workshop_placeholder)
+            )
+            // Suggest existing workshops matching what's typed; tap a chip to fill it in.
+            val matches = workshopSuggestions.filter {
+                workshopName.isNotBlank() &&
+                    it.contains(workshopName.trim(), ignoreCase = true) &&
+                    !it.equals(workshopName.trim(), ignoreCase = true)
+            }.distinct().take(5)
+            if (matches.isNotEmpty()) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                ) {
+                    matches.forEach { name ->
+                        SelectionChip(
+                            selected = false,
+                            onClick = { workshopName = name },
+                            label = name
+                        )
+                    }
+                }
+            }
+        }
 
         FormTextField(
             label = stringResource(R.string.field_notes),

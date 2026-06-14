@@ -1,10 +1,7 @@
 package com.autobook.app.ui.screen
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,12 +22,10 @@ import com.autobook.app.ui.component.ConfirmDeleteDialog
 import com.autobook.app.ui.component.DatePickerField
 import com.autobook.app.ui.component.FormScreen
 import com.autobook.app.ui.component.FormTextField
-import com.autobook.app.ui.component.SelectionChip
 import com.autobook.app.ui.component.SummaryCard
 import com.autobook.app.ui.theme.autoBookColors
 import com.autobook.app.util.LocalAppFormatter
 import com.autobook.app.util.ODOMETER_MAX_DIGITS
-import com.autobook.app.util.fuelTypes
 import kotlin.math.roundToInt
 
 /**
@@ -38,7 +33,6 @@ import kotlin.math.roundToInt
  * fields for editing. [onSubmit] hands back raw field values; the caller decides whether to
  * insert or update. [onDelete] (edit only) shows a confirmation dialog.
  */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FuelFormScreen(
     @StringRes titleRes: Int,
@@ -55,7 +49,7 @@ fun FuelFormScreen(
     var liters by remember { mutableStateOf(initial?.liters?.toString() ?: "") }
     var pricePerLiter by remember { mutableStateOf(initial?.let { fmt.editableAmount(it.pricePerLiter) } ?: "") }
     var odometer by remember { mutableStateOf(initial?.odometerAtFill?.toString() ?: "") }
-    var fuelType by remember { mutableStateOf(initial?.fuelType ?: fuelTypes.first()) }
+    var fuelType by remember { mutableStateOf(initial?.fuelType ?: "") }
 
     var submitted by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -66,6 +60,7 @@ fun FuelFormScreen(
     val odometerLow = odometer.toIntOrNull()?.let { it < vehicleCurrentOdometer } ?: false
     val litersValid = litersValue != null && litersValue > 0f
     val priceValid = priceMinor != null && priceMinor > 0
+    val fuelTypeValid = fuelType.isNotBlank()
 
     val liveTotal = if (litersValue != null && priceMinor != null) {
         (litersValue * priceMinor).roundToInt()
@@ -79,8 +74,8 @@ fun FuelFormScreen(
         onDelete = if (onDelete != null) ({ showDeleteDialog = true }) else null,
         onSubmit = {
             submitted = true
-            if (litersValid && priceValid && odometerValid) {
-                onSubmit(fillDate, litersValue!!, priceMinor!!, odometer.toInt(), fuelType)
+            if (litersValid && priceValid && odometerValid && fuelTypeValid) {
+                onSubmit(fillDate, litersValue!!, priceMinor!!, odometer.toInt(), fuelType.trim())
             }
         }
     ) {
@@ -134,27 +129,14 @@ fun FuelFormScreen(
             }
         }
 
-        Column {
-            Text(
-                text = stringResource(R.string.field_fuel_type),
-                style = MaterialTheme.typography.labelMedium,
-                color = autoBookColors.textSecondary,
-                modifier = Modifier.padding(bottom = 6.dp)
-            )
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                fuelTypes.forEach { type ->
-                    SelectionChip(
-                        selected = fuelType == type,
-                        onClick = { fuelType = type },
-                        label = type
-                    )
-                }
-            }
-        }
+        FormTextField(
+            label = stringResource(R.string.field_fuel_type),
+            value = fuelType,
+            onValueChange = { fuelType = it },
+            isError = submitted && !fuelTypeValid,
+            errorText = stringResource(R.string.error_required),
+            placeholder = stringResource(R.string.fuel_type_placeholder)
+        )
 
         SummaryCard.Outlined(
             label = stringResource(R.string.field_total_cost),

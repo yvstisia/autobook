@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.autobook.app.R
 import com.autobook.app.data.local.entity.ServiceRecord
 import com.autobook.app.data.local.entity.Vehicle
@@ -30,6 +31,7 @@ fun EditServiceScreen(
 
     val savedMsg = stringResource(R.string.service_saved)
     val deletedMsg = stringResource(R.string.service_deleted)
+    val workshopNames by viewModel.workshopNames.collectAsStateWithLifecycle()
 
     val loaded = record
     if (loaded == null) {
@@ -45,6 +47,7 @@ fun EditServiceScreen(
             vehicleType = vehicle?.type ?: "motor",
             vehicleCurrentOdometer = vehicle?.currentOdometer ?: 0,
             initial = loaded,
+            workshopSuggestions = workshopNames,
             onBack = onBack,
             onSubmit = { rec, reminders ->
                 viewModel.updateService(rec, reminders) {

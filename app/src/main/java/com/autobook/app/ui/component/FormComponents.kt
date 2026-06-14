@@ -70,6 +70,7 @@ fun FormTextField(
     isError: Boolean = false,
     errorText: String? = null,
     singleLine: Boolean = true,
+    placeholder: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -84,6 +85,9 @@ fun FormTextField(
             onValueChange = onValueChange,
             isError = isError,
             singleLine = singleLine,
+            placeholder = if (placeholder != null) {
+                { Text(placeholder, color = autoBookColors.textTertiary) }
+            } else null,
             keyboardOptions = keyboardOptions,
             shape = RadiusButton,
             colors = formFieldColors(),

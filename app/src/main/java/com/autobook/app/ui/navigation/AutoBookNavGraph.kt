@@ -160,7 +160,7 @@ fun AutoBookNavGraph(
 
         // --- Services ---
         composable(Screen.ServiceList.route) {
-            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository))
+            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository, container.workshopRepository))
             ServiceListScreen(
                 viewModel = vm,
                 vehicles = vehicles,
@@ -173,7 +173,7 @@ fun AutoBookNavGraph(
             arguments = listOf(navArgument(Screen.EditService.ARG_RECORD_ID) { type = NavType.IntType })
         ) { entry ->
             val recordId = entry.arguments?.getInt(Screen.EditService.ARG_RECORD_ID) ?: return@composable
-            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository))
+            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository, container.workshopRepository))
             EditServiceScreen(
                 viewModel = vm,
                 recordId = recordId,
@@ -187,7 +187,7 @@ fun AutoBookNavGraph(
             arguments = listOf(navArgument(Screen.AddService.ARG_VEHICLE_ID) { type = NavType.IntType })
         ) { entry ->
             val id = entry.arguments?.getInt(Screen.AddService.ARG_VEHICLE_ID) ?: return@composable
-            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository))
+            val vm: ServiceViewModel = viewModel(factory = ServiceViewModelFactory(container.serviceRepository, container.vehicleRepository, container.workshopRepository))
             val serviceVehicle = vehicles.firstOrNull { it.id == id }
             AddServiceScreen(
                 viewModel = vm,

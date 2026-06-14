@@ -50,6 +50,8 @@
     <string name="field_service_date">Tanggal Servis</string>
     <string name="field_service_types">Jenis Servis</string>
     <string name="field_cost">Biaya</string>
+    <string name="field_workshop">Bengkel</string>
+    <string name="workshop_placeholder">Nama bengkel (opsional)</string>
     <string name="field_notes">Catatan</string>
     <string name="service_type_oli">Ganti Oli</string>
     <string name="service_type_tune_up">Tune-Up</string>
@@ -92,6 +94,7 @@
     <string name="field_price_per_liter">Harga per Liter</string>
     <string name="field_total_cost">Total Biaya</string>
     <string name="field_fuel_type">Jenis BBM</string>
+    <string name="fuel_type_placeholder">Pertalite, Shell V-Power, dll</string>
     <string name="monthly_avg_kmpl">Rata-rata %1$s</string>
     <string name="fuel_saved">Bensin berhasil dicatat</string>
 
@@ -120,6 +123,7 @@
     <string name="delete_workshop_title">Hapus Bengkel?</string>
     <string name="delete_workshop_message">Bengkel ini akan dihapus dari daftar tersimpan.</string>
     <string name="rating_star">Bintang %1$d</string>
+    <string name="workshop_visits">%1$dx dikunjungi</string>
 
     <!-- Dashboard -->
     <string name="dashboard_greeting">Halo!</string>

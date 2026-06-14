@@ -25,9 +25,6 @@ val specializationOptions = listOf(
     CodedLabel("umum", R.string.spec_umum)
 )
 
-/** Fuel types (stored verbatim in FuelLog.fuelType). */
-val fuelTypes = listOf("Pertalite", "Pertamax", "Pertamax Turbo", "Solar", "Dexlite")
-
 /**
  * Max digits allowed in an odometer / km-target input. 6 digits (up to 999.999 km) covers
  * motorcycles and cars while blocking absurd or typo values.

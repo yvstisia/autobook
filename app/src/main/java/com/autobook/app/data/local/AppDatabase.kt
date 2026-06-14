@@ -25,7 +25,7 @@ import com.autobook.app.data.local.entity.Workshop
         FuelLog::class,
         Workshop::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -53,6 +53,16 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * v2 -> v3: adds ServiceRecord.workshopName (nullable) so a service can record where
+         * it was done and sync that workshop into the Workshop list. Preserves user data.
+         */
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE service_record ADD COLUMN workshopName TEXT")
+            }
+        }
+
         fun getInstance(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Room.databaseBuilder(
@@ -62,7 +72,7 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                     // Room enables the foreign_keys pragma automatically so that the
                     // ForeignKey CASCADE rules defined on the entities are enforced.
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                     .also { INSTANCE = it }
             }

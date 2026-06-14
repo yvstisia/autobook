@@ -32,5 +32,7 @@ data class ServiceRecord(
     val serviceTypes: String,
     /** Rupiah, integer only */
     val cost: Int,
-    val notes: String? = null
+    val notes: String? = null,
+    /** Optional workshop name where the service was done; synced into the Workshop list. */
+    val workshopName: String? = null
 )

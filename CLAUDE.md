@@ -60,6 +60,7 @@ app/
 | serviceTypes | String | comma-separated, e.g. "oli,tune_up,rem" |
 | cost | Int | Rupiah, integer only |
 | notes | String? | nullable |
+| workshopName | String? | nullable; free text, synced into the Workshop list (case-insensitive) |
 
 ### ServiceReminder
 | Column | Type | Notes |
@@ -82,7 +83,7 @@ app/
 | pricePerLiter | Int | Rupiah |
 | totalCost | Int | Rupiah = liters × pricePerLiter, rounded |
 | odometerAtFill | Int | km at time of fill |
-| fuelType | String | "Pertalite", "Pertamax", "Pertamax Turbo", "Solar", "Dexlite" |
+| fuelType | String | free text, e.g. "Pertalite", "Pertamax", "Shell V-Power" |
 | kmPerLiter | Float | auto-calculated: (odometerAtFill - previous odometerAtFill) / liters; 0.0 if first entry |
 
 ### Workshop
