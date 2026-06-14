@@ -4,58 +4,48 @@
 
 **Category:** Auto & Vehicles
 
-**Tags:** kendaraan, servis, bensin, bengkel, perawatan mobil, perawatan motor, vehicle maintenance, fuel tracker
+**Tags:** vehicle, service, fuel, workshop, car maintenance, motorcycle maintenance, vehicle maintenance, fuel tracker
 
 ---
 
 ## Short description (max 80 chars)
-Catat servis, bensin & bengkel kendaraan. Offline, tanpa login, gratis.
-<!-- 60 chars -->
+Track vehicle service, fuel & workshops. Offline, no login, free.
+<!-- 63 chars -->
 
 ---
 
 ## Full description (max 4000 chars)
 
-**AutoBook — buku catatan perawatan kendaraan Anda, langsung di saku.**
+**AutoBook — your vehicle maintenance logbook, right in your pocket.**
 
-AutoBook membantu Anda merawat motor dan mobil tanpa ribet. Semua data
-tersimpan di perangkat Anda — tanpa login, tanpa internet, tanpa biaya.
+AutoBook helps you keep your motorcycles and cars in top shape without the hassle. All data is stored on your device — no login, no internet, no cost.
 
-**🚗 Dukungan multi-kendaraan**
-Kelola beberapa motor dan mobil sekaligus. Beri nama panggilan, simpan merek,
-model, tahun, dan odometer untuk tiap kendaraan.
+**🚗 Multi-vehicle support**
+Manage multiple motorcycles and cars at once. Give each a nickname, and save the brand, model, year, and odometer for every vehicle.
 
-**🔧 Riwayat servis lengkap**
-Catat setiap servis: ganti oli, tune-up, ganti ban, servis rem, ganti aki, dan
-lainnya. Lengkap dengan tanggal, odometer, biaya, dan catatan pribadi.
+**🔧 Complete service history**
+Log every service visit: oil change, tune-up, tire replacement, brake service, battery replacement, and more. Includes date, odometer, cost, and personal notes.
 
-**⏰ Pengingat servis pintar**
-Atur target servis berikutnya berdasarkan jarak (km), tanggal, atau keduanya.
-AutoBook akan mengingatkan Anda saat servis sudah dekat (kuning) atau sudah
-terlewat (merah) — lewat notifikasi harian otomatis.
+**⏰ Smart service reminders**
+Set your next service target by distance (km), date, or both. AutoBook alerts you when service is approaching (yellow) or overdue (red) — via automatic daily notifications.
 
-**⛽ Pelacak efisiensi BBM**
-Catat pengisian bensin dan biarkan AutoBook menghitung konsumsi km/liter secara
-otomatis. Lihat total pengeluaran bensin bulanan dan rata-rata efisiensi
-kendaraan Anda.
+**⛽ Fuel efficiency tracker**
+Log every fuel fill-up and let AutoBook automatically calculate your km/liter consumption. View your monthly fuel spending and average efficiency per vehicle.
 
-**🏪 Simpan bengkel favorit**
-Tandai bengkel langganan lengkap dengan rating, spesialisasi (oli, ban,
-kelistrikan, body & cat, umum), dan lokasi GPS. Buka langsung di Google Maps
-dengan satu ketukan.
+**🏪 Save your favorite workshops**
+Bookmark your go-to workshops with ratings, specializations (oil, tires, electrical, body & paint, general), and GPS location. Open directly in Google Maps with one tap.
 
-**📊 Dashboard ringkas**
-Lihat sekilas kondisi semua kendaraan: jarak sejak servis terakhir, status
-pengingat, dan biaya bensin bulan ini.
+**📊 Clean dashboard**
+See all your vehicles at a glance: distance since last service, reminder status, and this month's fuel cost.
 
-**Kenapa AutoBook?**
-✅ 100% offline — data Anda tetap milik Anda
-✅ Tanpa login atau akun
-✅ Ringan dan cepat
-✅ Antarmuka Material You modern, mendukung mode gelap
-✅ Dirancang khusus untuk pengguna Indonesia (Rupiah, jenis BBM lokal)
+**Why AutoBook?**
+✅ 100% offline — your data stays yours
+✅ No login or account required
+✅ Lightweight and fast
+✅ Modern Material You interface with dark mode support
+✅ Designed for Indonesian users (Rupiah, local fuel types)
 
-Unduh AutoBook sekarang dan jangan pernah lupa jadwal servis lagi!
+Download AutoBook now and never miss a service schedule again!
 
 ---
 
