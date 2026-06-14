@@ -11,8 +11,13 @@ English and multi-currency support built in. See the [Roadmap](#roadmap).
 
 ## Screenshots
 
-> _Add screenshots here after uploading to GitHub._
-> Drag and drop images into this file when editing on github.com.
+<div align="center">
+  <img width="200" alt="AutoBook - Screenshot 1" src="https://github.com/user-attachments/assets/75cf43ce-63b5-4e55-8ecc-f4260cddff39" />
+  <img width="200" alt="AutoBook - Screenshot 2" src="https://github.com/user-attachments/assets/9a130b30-ec8d-49de-a423-4cafd76f92d6" />
+  <img width="200" alt="AutoBook - Screenshot 3" src="https://github.com/user-attachments/assets/8317706a-295a-40e5-ab51-797a31d1410c" />
+</div>
+
+
 
 ---
 
@@ -165,7 +170,6 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`
 - Data backup & restore (export/import)
 - Community workshop ratings
 - Receipt photo capture
-- STNK / insurance expiry reminders
 
 ---
 
