@@ -1,0 +1,51 @@
+name: Build & Release APK
+
+# Builds a debug-signed APK and attaches it to a GitHub Release whenever a
+# version tag (e.g. v1.5.0) is pushed. A debug APK is used so no signing
+# keystore/secrets are required; it is installable via sideload for testing.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # Installs the exact Gradle version this project targets. The repo has no
+      # committed Gradle wrapper, so we pin the version here instead of ./gradlew.
+      - name: Set up Gradle 8.10.2
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - name: Stage APK artifact
+        run: cp app/build/outputs/apk/debug/app-debug.apk "autobook-${GITHUB_REF_NAME}-debug.apk"
+
+      - name: Upload APK to the GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" "autobook-${GITHUB_REF_NAME}-debug.apk" --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" "autobook-${GITHUB_REF_NAME}-debug.apk" \
+              --title "AutoBook ${GITHUB_REF_NAME}" --generate-notes
+          fi
